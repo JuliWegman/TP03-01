@@ -18,16 +18,34 @@ controller.get("/event",(req,res)=>{
 controller.get("/event",(req,res)=>{
     const pageSize=req.query.pageSize;
     const page=req.query.page;
-    const nombre=req.query.nombre;
+    const nombre=req.query.name;
+    const category=req.query.category;
+    const startDate=req.query.startDate;
+    const tag=req.query.tag;
+
+
 
     try{
-        const allEvents=EventoService.getEventByName(pageSize,page,nombre); 
+        const allEvents=EventoService.getEventByName(pageSize,page,nombre,category,startDate,tag); 
         return res.json(allEvents);
     }catch(error){
         console.log(error);
         return res.json(error);
     }
 });
+
+controller.get("/event:id", (req,res) => {
+    const id = req.params.id;
+    
+    try{
+        const EventById=EventoService.getEventById(id); 
+        return res.json(EventById);
+    }catch(error){
+        console.log(error);
+        return res.json(error);
+    }
+
+})
 
 
 
