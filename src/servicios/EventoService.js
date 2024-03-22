@@ -17,6 +17,21 @@ class EventoService{
         }
     }
 
+    getEventByName(pageSize,reqPage,name){
+        
+        //ida base datos
+
+        const query=`select * from Pizzas limit ${pageSize} offset ${reqPage} where nombre=${name}`;
+        const eventsInBD=query.execute();
+
+        return{
+            collection: eventsInBD,
+            pageSize:pageSize,
+            page:reqPage,
+            nextPage:reqPage+1
+        }
+    }
+
 
 }
 
