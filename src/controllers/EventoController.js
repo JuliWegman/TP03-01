@@ -30,7 +30,7 @@ router.get("/", (req, res) => {
       );
       return res.json(allEvents);
     }else{
-        return res.json("error, los filtros ingresados")
+        return res.json("error en los filtros ingresados")
     }
   } catch (error) {
     console.log(error);
@@ -52,22 +52,34 @@ router.get("/:id", (req, res) => {
 
 router.get("/:id/enrollment", (req, res) => {
   const id = req.params.id;
+  const nombreEv = req.query.name;
+  const firstName = req.query.firstName;
+  const lastName = req.query.lastName;
+  const username = req.query.username;
+  const attended = req.query.attended;
+  const rating = req.query.rating;
 
-  try {
-    const EventById = EventService3.getEventEnrollment(
-      2,
-      "lolla",
-      "huevo",
-      "wegman",
-      "julian",
-      true,
-      4
-    );
-    return res.json(EventById);
-  } catch (error) {
-    console.log(error);
-    return res.json(error);
+  if (attended == "true" || attended == "false") {
+    
+      try {
+        const EventById = EventService3.getEventEnrollment(
+          2,
+          "lolla",
+          "huevo",
+          "wegman",
+          "julian",
+          true,
+          4
+        );
+        return res.json(EventById);
+      } catch (error) {
+        console.log(error);
+        return res.json(error);
+      }
+  } else{
+    return res.json("error no es booleanoZ");
   }
+
 });
 
 export default router;
