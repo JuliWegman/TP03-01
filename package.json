@@ -8,9 +8,10 @@
     "start": "node index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "",
+  "author": "Reifut,Zaselsky,Wegman",
   "license": "ISC",
   "dependencies": {
+    "express": "^4.19.2",
     "pg": "^8.11.3"
   }
 }
