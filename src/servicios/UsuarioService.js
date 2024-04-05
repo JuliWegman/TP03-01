@@ -1,29 +1,19 @@
 import { query } from "express";
 
-class UsuarioService{
+class UsuarioService {
+  getAllUsers(pageSize, reqPage) {
+    //ida base datos
 
-    getAllUsers(pageSize,reqPage){
-        
-        //ida base datos
+    const query = `select * from users limit ${pageSize} offset ${reqPage}`;
+    const eventsInBD = query.execute();
 
-        const query=`select * from users limit ${pageSize} offset ${reqPage}`;
-        const eventsInBD=query.execute();
-
-        return{
-            collection: eventsInBD,
-            pageSize:pageSize,
-            page:reqPage,
-            nextPage:reqPage+1
-        }
-    }
-
-    
-
-
+    return {
+      collection: eventsInBD,
+      pageSize: pageSize,
+      page: reqPage,
+      nextPage: reqPage + 1,
+    };
+  }
 }
-
-
-
-
 
 export default UsuarioService;
