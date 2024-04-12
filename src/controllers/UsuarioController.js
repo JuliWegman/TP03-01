@@ -5,13 +5,6 @@ const router = express.Router();
 const UserService1= new UsuarioService1();
 const UserService2= new UsuarioService2();
 
-const usuario = {
-  first_name: "huevo",
-  last_name: "wegman", 
-  username: "juli",
-  password: "huevo2007"
-}
-
 
 router.post("/login", (req, res) => {
     const pass = req.query.password;

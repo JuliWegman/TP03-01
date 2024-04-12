@@ -9,6 +9,9 @@ export class UsuarioService1 {
 export class UsuarioService2 {
   register(first_name, last_name, username, password) {
     const query=`Insert into users(first_name,last_name,username,password) values ("${first_name}","${last_name}","${username}","${password}")`;
+    
+    //query.execute();
+
 
   }
 }

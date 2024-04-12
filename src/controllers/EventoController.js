@@ -59,7 +59,7 @@ router.get("/:id/enrollment", (req, res) => {
   var attended = req.query.attended;
   const rating = req.query.rating;
 
-  if (attended == "true" || attended == "false" ||attended==null) {
+  if (attended == "true" || attended == "false" || attended == null) {
     
       try {
         const EventById = EventService3.getEventEnrollment(
@@ -77,7 +77,7 @@ router.get("/:id/enrollment", (req, res) => {
         return res.json(error);
       }
   } else{
-    return res.json("error no es booleanoZ");
+    return res.json("error no es booleano AHREEE");
   }
 
 });
