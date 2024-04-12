@@ -87,7 +87,7 @@ export class EventoService3 {
     query = query.slice(0, -10);
   }
 
-  return "xd2"
+  return "xd2";
 }
 }
 

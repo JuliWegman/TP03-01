@@ -56,10 +56,10 @@ router.get("/:id/enrollment", (req, res) => {
   const firstName = req.query.firstName;
   const lastName = req.query.lastName;
   const username = req.query.username;
-  const attended = req.query.attended;
+  var attended = req.query.attended;
   const rating = req.query.rating;
 
-  if (attended == "true" || attended == "false") {
+  if (attended == "true" || attended == "false" ||attended==null) {
     
       try {
         const EventById = EventService3.getEventEnrollment(
