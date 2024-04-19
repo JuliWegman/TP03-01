@@ -1,10 +1,11 @@
 import express from "express";
-import { ProvinciaService1,ProvinciaService2,ProvinciaService3} from "../servicios/ProvinciaService.js";
+import { ProvinciaService1,ProvinciaService2,ProvinciaService3,ProvinciaService4} from "../servicios/ProvinciaService.js";
 
 const router = express.Router();
 const ProvService1 = new ProvinciaService1();
 const ProvService2 = new ProvinciaService2();
 const ProvService3 = new ProvinciaService3();
+const ProvService4 = new ProvinciaService4();
 
 
 
@@ -28,15 +29,10 @@ router.post("/", (req, res) => {
   const longitude = req.query.longitude;
   const display_order = req.query.display_order;
 
-
   //arreglar body
   
   ProvService2.InsertProvincia(name, full_name, latitude, longitude, display_order);
-  return res.status(201).send({name,
-    full_name,
-    latitude,
-    longitude,
-    display_order});
+  return res.status(201).send("Provincia posteada efectivamente");
 });
 
 router.patch("/",(req,res)=>{
@@ -48,11 +44,24 @@ router.patch("/",(req,res)=>{
   const id=req.query.id;
 
   try {
-    ProvService3.patchProvincia(id,name,full_name,latitude,longitude,display_order);
-    return res.json("Provincia modificada!");
+    const respuesta=ProvService3.patchProvincia(id,name,full_name,latitude,longitude,display_order);
+    return res.json(respuesta);
   } catch (error) {
     console.log(error);
     return res.json(error);
   }
+
+});
+
+router.delete("/",(req,res)=>{
+  const id=req.query.id;
+  try {
+    const respuesta=ProvService4.DeleteProvincia(id);
+    return res.json(respuesta);
+  } catch (error) {
+    console.log(error);
+    return res.json(error);
+  }
+
 });
 export default router;
