@@ -1,4 +1,5 @@
 import { query } from "express";
+import EventosRepo from "../repositorios/EventoRepository.js"
 
 const Eventos = {
   collection: [
@@ -71,29 +72,7 @@ const Eventos = {
 
 export class EventoService1 {
   getEventByFilter(Evento, pageSize, reqPage) {
-    var query = `select e.name, e.description, ec.name, el.name, e.start_date, e.duration_in_minutes, e.price, e.enabled_for_enrollment, e.max__assistance from events e limit ${pageSize} offset ${reqPage} inner join event_categories ec on ec.id=events.id_event_category inner join event_tags et on et.id_event=events.id inner join tags t on et.id_tag=t.id inner join locations el on e.id_event_location = el.id inner join users u on e.id_creator_user = u.id where`;
-    //arreglalo huevo
-
-    if (Evento.name != null) {
-      query += ` events.name=${Evento.name} and`;
-    }
-    if (Evento.category != null) {
-      query += ` ec.name=${Evento.category} and`;
-    }
-    if (Evento.startDate != null) {
-      query += ` events.start_date=${Evento.startDate} and`;
-    }
-    if (Evento.tag != null) {
-      query += ` t.name=${Evento.tag} and`;
-    }
-    if (query.endsWith(" and")) {
-      query = query.slice(0, -4);
-    }
-    if (query.endsWith(" where")) {
-      query = query.slice(0, -6);
-    }
-
-    // const collection=query.execute();
+    const eventosPorFiltro = EventosRepo.getEventByFilter(Evento, pageSize, reqPage)
 
     return Eventos;
   }
