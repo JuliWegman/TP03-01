@@ -7,7 +7,7 @@ client.connect();
 
 // pasandolo al repository
 
-const getEventByFilter = (Evento, pageSize, reqPage) =>  {
+  const getEventByFilter = (Evento, pageSize, reqPage) =>  {
     var query = `select e.name, e.description, ec.name, el.name, e.start_date, e.duration_in_minutes, e.price, e.enabled_for_enrollment, e.max__assistance from events e limit ${pageSize} offset ${reqPage} inner join event_categories ec on events.id_event_category=ec.id inner join event_tags et on events.id=et.id_event inner join tags t on et.id_tag=t.id inner join locations el on e.id_event_location = el.id inner join users u on e.id_creator_user = u.id where`;
     //arreglalo huevo
 
@@ -32,7 +32,17 @@ const getEventByFilter = (Evento, pageSize, reqPage) =>  {
 
     // const collection=query.execute();
 
-    return query;
+    return "collection";
+  }
+
+
+  const getEventById=(id)=>{
+    var query = `select e.name, e.description, ec.name, el.name, e.start_date, e.duration_in_minutes, e.price, e.enabled_for_enrollment, e.max__assistance, ep.name from events e inner join event_categories ec on ec.id=events.id_event_category inner join event_tags et on et.id_event=events.id inner join tags t on et.id_tag=t.id inner join locations el on e.id_event_location = el.id inner join users u on e.id_creator_user = u.id inner join provinces ep on el.id_province = ep.id where e.id=${id}`;
+    //arreglalo
+    // const collection=query.execute();
+
+
+    return "collection";
   }
 
   export default EventoRepository;
