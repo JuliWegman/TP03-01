@@ -13,14 +13,16 @@ export class ProvinciaService1 {
         full_name: "Tierra del fuego",
         latitude: "21446",
         longitude: "21446",
-        display_order:3
+        display_order: 3,
       },
-      { id: 2,
+      {
+        id: 2,
         name: "tierra fuego",
         full_name: "Tierra del fuego",
         latitude: "21446",
         longitude: "21446",
-        display_order:3}
+        display_order: 3,
+      },
     ];
 
     return {
@@ -31,57 +33,55 @@ export class ProvinciaService1 {
     };
   }
 }
+
 export class ProvinciaService2 {
-  InsertProvincia(name, full_name, latitude, longitude, display_order) {
-    const query=`Insert into users(name,full_name,latitude,longitude,display_order) values ("${name}","${full_name}",${latitude},${longitude},${display_order})`;
-    
+  InsertProvincia(Provincia) {
+    const query = `Insert into provinces(name,full_name,latitude,longitude,display_order) values ("${Provincia.name}","${Provincia.full_name}",${Provincia.latitude},${Provincia.longitude},${Provincia.display_order})`;
+
     //query.execute();
 
     return "Agregado con éxito";
-
   }
 }
 
 export class ProvinciaService3 {
-  patchProvincia(id,name,full_name,latitude,longitude,display_order ) {
+  patchProvincia(Provincia) {
     var query = `update provinces SET`;
     //arreglalo huevo
     //ida base datos
-    if (name != null) {
-      query += ` name=${name},`;
+    if (Provincia.name != null) {
+      query += ` name=${Provincia.name},`;
     }
-    if (full_name != null) {
-      query += ` full_Name=${full_name},`;
+    if (Provincia.full_name != null) {
+      query += ` full_Name=${Provincia.full_name},`;
     }
-    if (latitude != null) {
-      query += ` latitude=${latitude},`;
+    if (Provincia.latitude != null) {
+      query += ` latitude=${Provincia.latitude},`;
     }
-    if (longitude != null) {
-      query += ` longitude=${longitude},`;
+    if (Provincia.longitude != null) {
+      query += ` longitude=${Provincia.longitude},`;
     }
-    if (display_order != null) {
-      query += ` display_order=${display_order},`;
+    if (Provincia.display_order != null) {
+      query += ` display_order=${Provincia.display_order},`;
     }
     if (query.endsWith(",")) {
       query = query.slice(0, -1);
     }
-    
+
     if (query.endsWith("SET")) {
       return "no mandaste ningun valor para updatear";
-    }else{
-      query+=` where id=${id}`;
-          //query.execute();
-    return "Updateado correctamente!"
-      
-    ;
+    } else {
+      query += ` where id=${Provincia.id}`;
+      //query.execute();
+      return "Updateado correctamente!";
+    }
   }
- }
 }
 
 export class ProvinciaService4 {
   DeleteProvincia(id) {
-    const query=`Delete from provinces Where id=${id}`;
-    
+    const query = `Delete from provinces Where id=${id}`;
+
     //query.execute();
 
     return "Eliminado con éxito";
