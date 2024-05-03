@@ -1,22 +1,17 @@
 import express from "express";
 import {
-  ProvinciaService1,
-  ProvinciaService2,
-  ProvinciaService3,
-  ProvinciaService4,
+  ProvinciaService
 } from "../servicios/ProvinciaService.js";
 
 const router = express.Router();
-const ProvService1 = new ProvinciaService1();
-const ProvService2 = new ProvinciaService2();
-const ProvService3 = new ProvinciaService3();
-const ProvService4 = new ProvinciaService4();
+const ProvService = new ProvinciaService();
+
 
 router.get("/", (req, res) => {
   const pageSize = req.query.pageSize;
   const reqPage = req.query.pageSize;
   try {
-    const provincias = ProvService1.getProvincias(pageSize, reqPage);
+    const provincias = ProvService.getProvincias(pageSize, reqPage);
     return res.json(provincias);
   } catch (error) {
     console.log(error);
@@ -34,7 +29,7 @@ router.post("/", (req, res) => {
 
   //arreglar body
 
-  ProvService2.InsertProvincia(Provincia);
+  ProvService.InsertProvincia(Provincia);
   return res.status(201).send("Provincia posteada efectivamente");
 });
 
@@ -48,7 +43,7 @@ router.patch("/", (req, res) => {
   Provincia.id = req.query.id;
 
   try {
-    const respuesta = ProvService3.patchProvincia(Provincia);
+    const respuesta = ProvService.patchProvincia(Provincia);
     return res.json(respuesta);
   } catch (error) {
     console.log(error);
@@ -59,7 +54,7 @@ router.patch("/", (req, res) => {
 router.delete("/", (req, res) => {
   const id = req.query.id;
   try {
-    const respuesta = ProvService4.DeleteProvincia(id);
+    const respuesta = ProvService.DeleteProvincia(id);
     return res.json(respuesta);
   } catch (error) {
     console.log(error);

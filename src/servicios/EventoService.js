@@ -1,6 +1,6 @@
 import { query } from "express";
 import EventosRepo from "../repositorios/EventoRepository.js"
-
+// import user 
 
 const repo= new EventosRepo();
 
@@ -67,147 +67,67 @@ const Eventos = {
     },
   ],
   pagination: {
-    limit: 15,
-    offset: 0,
-    nextPage: null,
-    total: "1",
+    pagination:{limit:parsedLimit,
+      offset:parsedOffset,
+      nextPage:((parsedOffset+1) *parsedLimit<=totalCount) ?`${process.env.BASE_URL}/${path}?limit=${parsedLimit}&offset=${parsedOffset+1}${(eventName) ?`&eventName=${eventName}`:null}${(eventCategory) ?`&eventCategory=${eventCategory}` : null}${(eventDate) ?`&eventDate=${eventDate}`:null}${(eventTag) ?`&eventTag=${eventTag}`:null}`:null,
+      total:totalCount}
+  
   },
 };
 
-export class EventoService1 {
-  getEventByFilter(Evento, pageSize, reqPage) {
-    const eventosPorFiltro = repo.getEventByFilter(Evento, pageSize, reqPage)
+export class EventoService {
+  async getEventByFilter(Evento, pageSize, reqPage) {
+    const eventosPorFiltro = await repo.getEventByFilter(Evento, pageSize, reqPage)
 
     return Eventos;
   }
-}
 
-export class EventoService2 {
-  getEventById(id) {
-    const eventoPorId = repo.getEventById(id);
-    return Eventos.collection[0];
+  async getEventById(id) {
+    return await repo.getEventById(id);
+
   }
-}
 
-export class EventoService3 {
-  getEventEnrollment(enrollment) {
-    var query = `select ev.id,ev.name, u.first_name, u.last_name, u.username, ee.atended, ee.rating from events ev inner join event_enrollments ee on ev.id=ee.id_event inner join on users u ev.id_user = u.id where ev.id=${enrollment.id} and `;
+  async getEventEnrollment(enrollment) {
 
-    if (enrollment.nombreEv != null) {
-      query += ` ev.name=${enrollment.nombreEv} and`;
-    }
-    if (enrollment.firstName != null) {
-      query += ` u.first_Name=${enrollment.firstName} and`;
-    }
-    if (enrollment.lastName != null) {
-      query += ` u.last_name=${enrollment.lastName} and`;
-    }
-    if (enrollment.username != null) {
-      query += ` u.username=${enrollment.username} and`;
-    }
-    if (enrollment.attended != null) {
-      query += ` ee.attended=${enrollment.attended} and`;
-    }
-    if (enrollment.rating != null) {
-      query += ` ee.rating=${enrollment.rating} and`;
-    }
-    if (query.endsWith(" and")) {
-      query = query.slice(0, -4);
-    }
-    if (query.endsWith(" and where")) {
-      query = query.slice(0, -10);
-    }
-
-    return "(enrollment)";
+    const eventoEnrollment = await repo.getEventEnrollment(enrollment);
+    return eventoEnrollment;
   }
-}
 
-export class EventoService4 {
-  patchEvento(Evento) {
-    var query = `update provinces SET`;
+  async patchEvento(Evento) {
     //arreglalo huevo
 
-    if (Evento.name != null) {
-      query += ` name=${Evento.name},`;
-    }
-    if (Evento.description != null) {
-      query += ` description=${Evento.description},`;
-    }
-    if (Evento.start_date != null) {
-      query += ` start_date=${Evento.start_date},`;
-    }
-    if (Evento.duration_in_minutes != null) {
-      query += ` duration_in_minutes=${Evento.duration_in_minutes},`;
-    }
-    if (Evento.price != null) {
-      query += ` price=${Evento.price},`;
-    }
-    if (
-      Evento.enabled_for_enrollment != null &&
-      (Evento.enabled_for_enrollment == "true" ||
-        Evento.enabled_for_enrollment == "false")
-    ) {
-      query += ` enabled_for_enrollment=${Evento.enabled_for_enrollment},`;
-    }
-    if (Evento.max__assistance != null) {
-      query += ` max__assistance=${Evento.max__assistance},`;
-    }
-
-    if (query.endsWith(",")) {
-      query = query.slice(0, -1);
-    }
-
-    if (query.endsWith("SET")) {
-      return "no mandaste ningun valor para updatear";
-    } else {
-      query += ` where id=${Evento.id}`;
-      //query.execute();
-      return "Updateado correctamente!";
-    }
+    const patchEvento = await repo.patchEvento(Evento);
+    return "Evento Actualizado";
   }
-}
 
-export class EventoService5 {
-  DeleteEvent(id) {
-    const query = `Delete from provinces Where id=${id}`;
+  async DeleteEvent(id) {
 
-    //query.execute();
+    const DeleteEvento = await repo.DeleteEvent(id);
 
     return "Eliminado con éxito";
   }
-}
 
-export class EventoService6 {
-  InscripcionEvento(enrollment) {
+  async InscripcionEvento(enrollment, id) {
     const evento = EventoService2.getEventById(id);
-    if (evento.enabled_for_enrollment) {
-      const query = `Insert INTO event_enrollment (id_event, id_user, description, registration_date_time,attended,observations,rating) VALUES (${
-        evento.id
-      },1,${enrollment.descripcion},${Date.now()},${enrollment.attended},${
-        enrollment.observations
-      },${enrollment.rating})`;
-      return "Inscripto correctamente!";
-    } else {
-      return "Este evento no está disponible para inscribirse";
+    // const users = user.getbyid
+    const users = {
+      id:2,
+      nombre: "joaquin"
     }
+
+    const InscripcionAEvento = await repo.InscripcionEvento(enrollment, evento, users)
+    return InscripcionAEvento;
   }
-}
 
-export class EventoService7 {
-  CambiarRating(id, rating) {
-    const query = `update event_enrollments SET rating=${rating} WHERE id=${id}`;
+  async CambiarRating(id, rating) {
     //query.execute();
-
-    return "Rating cambiado !";
+    const UpdateRating = await repo.UpdateRating(rating,id)
+    return UpdateRating;
   }
-}
 
-export class EventoService8 {
-  InsertEvento(evento) {
-    const query = `Insert into events(name,description,id_event_category,id_event_location,start_date,duration_in_minutes,price,enabled_for_enrollment,max__assistance) values ("${evento.name}","$evento.{description}","${evento.id_event_category}","${evento.id_event_location}","${evento.start_date}","${evento.duration_in_minutes},"${evento.price}","${evento.enabled_for_enrollment}","${evento.max__assistance}")`;
+  async InsertEvento(evento) {
 
-    //query.execute();
-
-    return "Agregado con éxito";
+    const respuesta=await repo.InsertEvento(evento);
+    return respuesta;
   }
 }

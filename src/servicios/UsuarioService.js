@@ -1,4 +1,7 @@
 import { query } from "express";
+import repositorio from "../repositorios/UsuarioRepository.js"
+
+const repo= new repositorio();
 
 const ListadoUsers = {
   collection: [
@@ -26,22 +29,25 @@ const ListadoUsers = {
     },
   ],
   pagination: {
-    limit: 15,
-    offset: 0,
-    nextPage: null,
-    total: "2",
+    pagination:{limit:parsedLimit,
+      offset:parsedOffset,
+      nextPage:((parsedOffset+1) *parsedLimit<=totalCount) ?`${process.env.BASE_URL}/${path}?limit=${parsedLimit}&offset=${parsedOffset+1}${(eventName) ?`&eventName=${eventName}`:null}${(eventCategory) ?`&eventCategory=${eventCategory}` : null}${(eventDate) ?`&eventDate=${eventDate}`:null}${(eventTag) ?`&eventTag=${eventTag}`:null}`:null,
+      total:totalCount}
+  
   },
 };
-export class UsuarioService1 {
-  login(user, pass) {
+export class UsuarioService {
+  async login(user, pass) {
     return "token";
   }
-};
 
-export class UsuarioService2 {
-  register(user) {
+  async register(user) {
     const query = `Insert into users(first_name,last_name,username,password) values ("${user.first_name}","${user.last_name}","${user.username}","${user.password}")`;
 
     //query.execute();
+  }
+
+  async getUserById(id){
+    return await repo.getUserById(id);
   }
 };

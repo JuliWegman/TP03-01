@@ -1,18 +1,17 @@
 import express from "express";
 import {
-  UsuarioService1,
-  UsuarioService2,
+  UsuarioService
 } from "../servicios/UsuarioService.js";
 
 const router = express.Router();
-const UserService1 = new UsuarioService1();
-const UserService2 = new UsuarioService2();
+const UserService = new UsuarioService();
+
 
 router.post("/login", (req, res) => {
   const pass = req.query.password;
   const user = req.query.username;
   try {
-    const token = UserService1.login(user, pass);
+    const token = UserService.login(user, pass);
     return res.json(token);
   } catch (error) {
     return res.json("error");
@@ -28,7 +27,7 @@ router.post("/register", (req, res) => {
 
   //arreglar body
 
-  UserService2.register(user);
+  UserService.register(user);
   return res.status(201).send(user);
 });
 

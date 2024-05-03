@@ -1,30 +1,16 @@
 import express from "express";
-import {
-  EventoService1,
-  EventoService2,
-  EventoService3,
-  EventoService4,
-  EventoService5,
-  EventoService6,
-  EventoService7,
-  EventoService8,
-} from "../servicios/EventoService.js";
-
+import {EventoService} from "../servicios/EventoService.js";
+import Evento from "../entities/Evento.js";
 
 const router = express.Router();
-const EventService1 = new EventoService1();
-const EventService2 = new EventoService2();
-const EventService3 = new EventoService3();
-const EventService4 = new EventoService4();
-const EventService5 = new EventoService5();
-const EventService6 = new EventoService6();
-const EventService7 = new EventoService7();
-const EventService8 = new EventoService8();
+const EventService = new EventoService();
+
 
 router.get("/", (req, res) => {
   const Evento = {};
-  const pageSize = req.query.pageSize;
-  const page = req.query.page;
+  const pageSize = req.query.pageSize; // cant de eventos
+  const page = req.query.page; // numero de pagina
+  const URL=req.originalUrl; // url de la siguiente página
   Evento.name = req.query.name;
   Evento.category = req.query.category;
   Evento.startDate = req.query.startDate;
@@ -32,7 +18,7 @@ router.get("/", (req, res) => {
 
   try {
     if (!isNan(Date.parse(Evento.startDate))) {
-      const allEvents = EventService1.getEventByFilter(Evento, pageSize, page);
+      const allEvents = EventService.getEventByFilter(Evento, pageSize, page);
       return res.json(allEvents);
     } else {
       return res.json("error en los filtros ingresados");
@@ -46,7 +32,7 @@ router.get("/", (req, res) => {
 router.delete("/", (req, res) => {
   const id = req.query.id;
   try {
-    const respuesta = EventService5.DeleteEvento(id);
+    const respuesta = EventService.DeleteEvento(id);
     return res.json(respuesta);
   } catch (error) {
     console.log(error);
@@ -66,7 +52,7 @@ router.post("/", (req, res) => {
 
   //arreglar body
 
-  EventService8.InsertEvento(Evento);
+  EventService.InsertEvento(Evento);
   return res.status(201).send(Evento);
 });
 
@@ -83,7 +69,7 @@ router.patch("/", (req, res) => {
   Evento.id = req.query.id;
 
   try {
-    const respuesta = EventService4.patchEvento(Evento);
+    const respuesta = EventService.patchEvento(Evento);
     return res.json(respuesta);
   } catch (error) {
     console.log(error);
@@ -95,7 +81,7 @@ router.get("/:id", (req, res) => {
   const id = req.params.id;
 
   try {
-    const EventById = EventService2.getEventById(2);
+    const EventById = EventService.getEventById(2);
     return res.json(EventById);
   } catch (error) {
     console.log(error);
@@ -115,7 +101,7 @@ router.get("/:id/enrollment", (req, res) => {
 
   if (attended == "true" || attended == "false" || attended == null) {
     try {
-      const x = EventService3.getEventEnrollment(enrollment);
+      const x = EventService.getEventEnrollment(enrollment);
       return res.json(x);
     } catch (error) {
       console.log(error);
@@ -135,7 +121,7 @@ router.post("/:id/enrollment", (req, res) => {
   enrollment.descripcion = req.query.descripcion;
   enrollment.observations = req.query.observations;
   try {
-    const mensaje = EventService6.InscripcionEvento(enrollment);
+    const mensaje = EventService.InscripcionEvento(enrollment);
     return res.json(mensaje);
   } catch (error) {
     console.log(error);
@@ -147,7 +133,7 @@ router.patch("/:id/enrollment", (req, res) => {
   const idEvento = req.params.id;
   const rating = req.query.rating;
   try {
-    const mensaje = EventService7.CambiarRating(idEvento, rating);
+    const mensaje = EventService.CambiarRating(idEvento, rating);
     return res.json(mensaje);
   } catch (error) {
     console.log(error);
