@@ -1,5 +1,6 @@
 import pg from "pg";
-import { BDconfig } from "../configs/BD";
+import { BDconfig } from "../configs/BD.js";
+import e from "express";
 
 // pasandolo al repository
 export default class EventoRepository {
@@ -11,37 +12,53 @@ export default class EventoRepository {
 
   async getEventByFilter(Evento, pageSize, reqPage) {
     var returnEntity = null;
-
     try {
-      var sql = `select e.name, e.description, ec.name, el.name, e.start_date, e.duration_in_minutes, e.price, e.enabled_for_enrollment, e.max__assistance from events e limit $1 offset $2 inner join event_categories ec on events.id_event_category=ec.id inner join event_tags et on events.id=et.id_event inner join tags t on et.id_tag=t.id inner join locations el on e.id_event_location = el.id inner join users u on e.id_creator_user = u.id where`;
-
-      if (Evento.name != null) {
-        sql += ` events.name=$3 and`;
-      }
-      if (Evento.category != null) {
-        sql += ` ec.name=$4 and`;
-      }
-      if (Evento.startDate != null) {
-        sql += ` events.start_date=$5 and`;
-      }
-      if (Evento.tag != null) {
-        sql += ` t.name=$6 and`;
-      }
-      if (sql.endsWith(" and")) {
-        sql = sql.slice(0, -4);
-      }
-      if (sql.endsWith(" where")) {
-        sql = sql.slice(0, -6);
-      }
-
+      var sql = `SELECT e.name, e.description, ec.name as Category, el.name as Location, e.start_date, e.duration_in_minutes, e.price, e.enabled_for_enrollment, e.max_assistance FROM events e inner join event_categories ec on e.id_event_category=ec.id inner join event_tags et on e.id=et.id_event inner join tags t on et.id_tag=t.id inner join locations el on e.id_event_location = el.id inner join users u on e.id_creator_user = u.id where `;
+      console.log(Evento.id);
       const values = [
         pageSize,
         reqPage,
-        Evento.name,
-        Evento.category,
-        Evento.startDate,
-        Evento.tag,
       ];
+      var index = 3;
+
+      if (Evento.name != null) {
+        sql += ` e.name=$${index} and`;
+        values.push(Evento.name);
+        index++;
+      }
+      if (Evento.category != null) {
+        sql += ` ec.name=$${index} and`;
+        values.push(Evento.category);
+        index++;
+      }
+      if (Evento.startDate != null) {
+        sql += ` e.start_date=$${index} and`;
+        values.push(Evento.startDate);
+        index++;
+      }
+      if (Evento.tag != null) {
+        sql += ` t.name=$${index} and`;
+        values.push(Evento.tag);
+        index++;
+      }
+
+      console.log(sql + "AAAA");
+
+      if (sql.endsWith(" and")) {
+        sql = sql.slice(0, -4);
+      }
+      if (sql.endsWith(" where ")) {
+        sql = sql.slice(0, -7);
+      }
+      
+      sql += " limit $1 offset $2";
+      
+      console.log(sql);
+
+      values.forEach(element => {
+        console.log(element);
+      });
+
       const result = await this.BDclient.query(sql, values);
 
       if (result.rows.length > 0) {
@@ -50,14 +67,13 @@ export default class EventoRepository {
     } catch (error) {
       console.log(error);
     }
-
     return returnEntity;
   }
 
   async getEventById(id) {
     let returnEntity = null;
     try {
-      var sql = `select e.name, e.description, ec.name, el.name, e.start_date, e.duration_in_minutes, e.price, e.enabled_for_enrollment, e.max__assistance, ep.name from events e inner join event_categories ec on ec.id=events.id_event_category inner join event_tags et on et.id_event=events.id inner join tags t on et.id_tag=t.id inner join locations el on e.id_event_location = el.id inner join users u on e.id_creator_user = u.id inner join provinces ep on el.id_province = ep.id where e.id=$1`;
+      var sql = `SELECT e.name, e.description, ec.name as Category, el.name as Location, e.start_date, e.duration_in_minutes, e.price, e.enabled_for_enrollment, e.max_assistance FROM events e inner join event_categories ec on e.id_event_category=ec.id inner join event_tags et on e.id=et.id_event inner join tags t on et.id_tag=t.id inner join locations el on e.id_event_location = el.id inner join users u on e.id_creator_user = u.id where e.id=$1`;
       const values = [id];
       const result = await this.BDclient.query(sql, values);
 
@@ -73,25 +89,39 @@ export default class EventoRepository {
   async getEventEnrollment(enrollment) {
     let returnEntity = null;
     try {
-      var sql = `select ev.id,ev.name, u.first_name, u.last_name, u.username, ee.atended, ee.rating from events ev inner join event_enrollments ee on ev.id=ee.id_event inner join on users u ev.id_user = u.id where ev.id=$7 and `;
+      var sql = `select ev.id,ev.name as Nombre, u.first_name as UserNombre, u.last_name as UserApellido, u.username, ee.atended, ee.rating from events ev inner join event_enrollments ee on ev.id=ee.id_event inner join on users u ev.id_user = u.id where ev.id=$7 and `;
+      var index = 1;
+      const values = [];
 
       if (enrollment.nombreEv != null) {
-        sql += ` ev.name=$1 and`;
+        sql += ` ev.name=$${index} and`;
+        values.push(enrollment.nombreEv)
+        index++;
       }
       if (enrollment.firstName != null) {
-        sql += ` u.first_Name=$2 and`;
+        sql += ` u.first_Name=$${index} and`;
+        values.push(enrollment.firstName)
+        index++;
       }
       if (enrollment.lastName != null) {
-        sql += ` u.last_name=$3 and`;
+        sql += ` u.last_name=$${index} and`;
+        values.push(enrollment.lastName)
+        index++;
       }
       if (enrollment.username != null) {
-        sql += ` u.username=$4 and`;
+        sql += ` u.username=$${index} and`;
+        values.push(enrollment.username)
+        index++;
       }
       if (enrollment.attended != null) {
-        sql += ` ee.attended=$5 and`;
+        sql += ` ee.attended=$${index} and`;
+        values.push(enrollment.attended)
+        index++;
       }
       if (enrollment.rating != null) {
-        sql += ` ee.rating=$6 and`;
+        sql += ` ee.rating=$${index} and`;
+        values.push(enrollment.attended)
+        index++;
       }
       if (sql.endsWith(" and")) {
         sql = sql.slice(0, -4);
@@ -100,14 +130,7 @@ export default class EventoRepository {
         sql = sql.slice(0, -10);
       }
 
-      const values = [
-        enrollment.nombreEv,
-        enrollment.firstName,
-        enrollment.lastName,
-        enrollment.username,
-        enrollment.attended,
-        enrollment.rating,
-      ];
+
 
       const result = await this.BDclient.query(sql, values);
 

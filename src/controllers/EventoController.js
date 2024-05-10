@@ -1,23 +1,27 @@
 import express from "express";
 import {EventoService} from "../servicios/EventoService.js";
 import Evento from "../entities/Evento.js";
+import AuthMiddleware from "../auth/authMiddleware.js";
 
 const router = express.Router();
 const EventService = new EventoService();
 
 
-router.get("/", (req, res) => {
+router.get("/" , async (req, res) => {
   const Evento = {};
-  const pageSize = req.query.pageSize; // cant de eventos
-  const page = req.query.page; // numero de pagina
+  const pageSize = 5; // cant de eventos
+  const page = 1; // numero de pagina
   const URL=req.originalUrl; // url de la siguiente página
   Evento.name = req.query.name;
   Evento.category = req.query.category;
   Evento.startDate = req.query.startDate;
   Evento.tag = req.query.tag;
+  req.user;
 
   try {
-    if (!isNan(Date.parse(Evento.startDate))) {
+    const allEvents = await EventService.getEventByFilter(Evento, pageSize, page);
+    return res.json(allEvents);
+    if (esFecha(Evento.startDate)) {
       const allEvents = EventService.getEventByFilter(Evento, pageSize, page);
       return res.json(allEvents);
     } else {
@@ -29,18 +33,18 @@ router.get("/", (req, res) => {
   }
 });
 
-router.delete("/", (req, res) => {
+router.delete("/", AuthMiddleware , (req, res) => {
   const id = req.query.id;
   try {
-    const respuesta = EventService.DeleteEvento(id);
-    return res.json(respuesta);
+    const respuesta = EventService.DeleteEvent(id);
+    return res.json(respuesta);4
   } catch (error) {
     console.log(error);
     return res.json(error);
   }
 });
 
-router.post("/", (req, res) => {
+router.post("/",AuthMiddleware, async (req, res) => {
   const Evento = {};
   Evento.name = req.query.name;
   Evento.description = req.query.description;
@@ -51,12 +55,18 @@ router.post("/", (req, res) => {
   Evento.max__assistance = req.query.max__assistance;
 
   //arreglar body
-
-  EventService.InsertEvento(Evento);
-  return res.status(201).send(Evento);
+  
+  try {
+    const respuesta = await EventService.InsertEvento(Evento);;
+    return res.json(respuesta);
+  } catch (error) {
+    console.log(error);
+    return res.json(error);
+  }
+  
 });
 
-router.patch("/", (req, res) => {
+router.patch("/",AuthMiddleware, async (req, res) => {
   const Evento = {};
   Evento.name = req.query.name;
   Evento.description = req.query.description;
@@ -69,7 +79,7 @@ router.patch("/", (req, res) => {
   Evento.id = req.query.id;
 
   try {
-    const respuesta = EventService.patchEvento(Evento);
+    const respuesta = await EventService.patchEvento(Evento);
     return res.json(respuesta);
   } catch (error) {
     console.log(error);
@@ -77,11 +87,11 @@ router.patch("/", (req, res) => {
   }
 });
 
-router.get("/:id", (req, res) => {
+router.get("/:id", async (req, res) => {
   const id = req.params.id;
-
+  console.log(id);
   try {
-    const EventById = EventService.getEventById(2);
+    const EventById = await EventService.getEventById(id);
     return res.json(EventById);
   } catch (error) {
     console.log(error);
@@ -89,7 +99,7 @@ router.get("/:id", (req, res) => {
   }
 });
 
-router.get("/:id/enrollment", (req, res) => {
+router.get("/:id/enrollment", async (req, res) => {
   const enrollment = {};
   enrollment.id = req.params.id;
   enrollment.nombreEv = req.query.name;
@@ -99,20 +109,22 @@ router.get("/:id/enrollment", (req, res) => {
   enrollment.attended = req.query.attended;
   enrollment.rating = req.query.rating;
 
-  if (attended == "true" || attended == "false" || attended == null) {
+  // if (enrollment.attended == "true" || enrollment.attended == "false" || enrollment.attended == null || 1==1) {
+    console.log("tamos chelo");
     try {
-      const x = EventService.getEventEnrollment(enrollment);
+      console.log("HOLAAAAAA");
+      const x = await EventService.getEventEnrollment(enrollment);
       return res.json(x);
     } catch (error) {
       console.log(error);
       return res.json(error);
     }
-  } else {
-    return res.json("error no es booleano AHREEE");
-  }
+  // } else {
+  //   return res.json("error no es booleano AHREEE");
+  // }
 });
 
-router.post("/:id/enrollment", (req, res) => {
+router.post("/:id/enrollment", AuthMiddleware , async (req, res) => {
   const enrollment = {};
 
   enrollment.idEvento = req.params.id;
@@ -121,7 +133,7 @@ router.post("/:id/enrollment", (req, res) => {
   enrollment.descripcion = req.query.descripcion;
   enrollment.observations = req.query.observations;
   try {
-    const mensaje = EventService.InscripcionEvento(enrollment);
+    const mensaje = await EventService.InscripcionEvento(enrollment);
     return res.json(mensaje);
   } catch (error) {
     console.log(error);
@@ -129,7 +141,7 @@ router.post("/:id/enrollment", (req, res) => {
   }
 });
 
-router.patch("/:id/enrollment", (req, res) => {
+router.patch("/:id/enrollment",AuthMiddleware, (req, res) => {
   const idEvento = req.params.id;
   const rating = req.query.rating;
   try {

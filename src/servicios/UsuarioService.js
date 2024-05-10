@@ -1,6 +1,6 @@
 import { query } from "express";
 import repositorio from "../repositorios/UsuarioRepository.js"
-
+import login from "../auth/login.js";
 const repo= new repositorio();
 
 const ListadoUsers = {
@@ -28,23 +28,41 @@ const ListadoUsers = {
       description: "Alto Chow",
     },
   ],
-  pagination: {
-    pagination:{limit:parsedLimit,
-      offset:parsedOffset,
-      nextPage:((parsedOffset+1) *parsedLimit<=totalCount) ?`${process.env.BASE_URL}/${path}?limit=${parsedLimit}&offset=${parsedOffset+1}${(eventName) ?`&eventName=${eventName}`:null}${(eventCategory) ?`&eventCategory=${eventCategory}` : null}${(eventDate) ?`&eventDate=${eventDate}`:null}${(eventTag) ?`&eventTag=${eventTag}`:null}`:null,
-      total:totalCount}
+  // pagination: {
+  //   pagination:{limit:parsedLimit,
+  //     offset:parsedOffset,
+  //     nextPage:((parsedOffset+1) *parsedLimit<=totalCount) ?`${process.env.BASE_URL}/${path}?limit=${parsedLimit}&offset=${parsedOffset+1}${(eventName) ?`&eventName=${eventName}`:null}${(eventCategory) ?`&eventCategory=${eventCategory}` : null}${(eventDate) ?`&eventDate=${eventDate}`:null}${(eventTag) ?`&eventTag=${eventTag}`:null}`:null,
+  //     total:totalCount}
   
-  },
+  // },
 };
 export class UsuarioService {
   async login(user, pass) {
-    return "token";
+    try{
+    const Usuario= await this.getUserByPayload(user,pass)
+    if(Usuario!=null){
+      const token =await login(Usuario)
+      return token;
+    }else{
+      return "Usuario o Contraseña no existen";
+    }
+    }catch(error){
+      return res.json(error);
+
+    }
+    
+    
   }
 
   async register(user) {
-    const query = `Insert into users(first_name,last_name,username,password) values ("${user.first_name}","${user.last_name}","${user.username}","${user.password}")`;
+    
 
     //query.execute();
+  }
+
+  async getUserByPayload(user,pass){
+    return await repo.getUserByName(user,pass)
+
   }
 
   async getUserById(id){

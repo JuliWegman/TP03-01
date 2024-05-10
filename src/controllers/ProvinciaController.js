@@ -3,15 +3,18 @@ import {
   ProvinciaService
 } from "../servicios/ProvinciaService.js";
 
+import AuthMiddleware from "../auth/authMiddleware.js";
+
+
 const router = express.Router();
 const ProvService = new ProvinciaService();
 
 
-router.get("/", (req, res) => {
+router.get("/", async (req, res) => {
   const pageSize = req.query.pageSize;
   const reqPage = req.query.pageSize;
   try {
-    const provincias = ProvService.getProvincias(pageSize, reqPage);
+    const provincias = await ProvService.getProvincias(pageSize, reqPage);
     return res.json(provincias);
   } catch (error) {
     console.log(error);
@@ -19,7 +22,7 @@ router.get("/", (req, res) => {
   }
 });
 
-router.post("/", (req, res) => {
+router.post("/", AuthMiddleware , async (req, res) => {
   const Provincia = {};
   Provincia.name = req.query.name;
   Provincia.full_name = req.query.full_name;
@@ -29,11 +32,16 @@ router.post("/", (req, res) => {
 
   //arreglar body
 
-  ProvService.InsertProvincia(Provincia);
-  return res.status(201).send("Provincia posteada efectivamente");
+  ;try {
+    const respuesta = await ProvService.InsertProvincia(Provincia);
+    return res.json(respuesta);
+  } catch (error) {
+    console.log(error);
+    return res.json(error);
+  }
 });
 
-router.patch("/", (req, res) => {
+router.patch("/", AuthMiddleware , async(req, res) => {
   const Provincia = {};
   Provincia.name = req.query.name;
   Provincia.full_name = req.query.full_name;
@@ -43,7 +51,7 @@ router.patch("/", (req, res) => {
   Provincia.id = req.query.id;
 
   try {
-    const respuesta = ProvService.patchProvincia(Provincia);
+    const respuesta = await ProvService.patchProvincia(Provincia);
     return res.json(respuesta);
   } catch (error) {
     console.log(error);
@@ -51,10 +59,10 @@ router.patch("/", (req, res) => {
   }
 });
 
-router.delete("/", (req, res) => {
+router.delete("/", AuthMiddleware , async (req, res) => {
   const id = req.query.id;
   try {
-    const respuesta = ProvService.DeleteProvincia(id);
+    const respuesta = await ProvService.DeleteProvincia(id);
     return res.json(respuesta);
   } catch (error) {
     console.log(error);

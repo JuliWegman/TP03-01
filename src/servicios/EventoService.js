@@ -66,20 +66,20 @@ const Eventos = {
       },
     },
   ],
-  pagination: {
-    pagination:{limit:parsedLimit,
-      offset:parsedOffset,
-      nextPage:((parsedOffset+1) *parsedLimit<=totalCount) ?`${process.env.BASE_URL}/${path}?limit=${parsedLimit}&offset=${parsedOffset+1}${(eventName) ?`&eventName=${eventName}`:null}${(eventCategory) ?`&eventCategory=${eventCategory}` : null}${(eventDate) ?`&eventDate=${eventDate}`:null}${(eventTag) ?`&eventTag=${eventTag}`:null}`:null,
-      total:totalCount}
+  // pagination: {
+  //   pagination:{limit:parsedLimit,
+  //     offset:parsedOffset,
+  //     nextPage:((parsedOffset+1) *parsedLimit<=totalCount) ?`${process.env.BASE_URL}/${path}?limit=${parsedLimit}&offset=${parsedOffset+1}${(eventName) ?`&eventName=${eventName}`:null}${(eventCategory) ?`&eventCategory=${eventCategory}` : null}${(eventDate) ?`&eventDate=${eventDate}`:null}${(eventTag) ?`&eventTag=${eventTag}`:null}`:null,
+  //     total:totalCount}
   
-  },
+  // },
 };
 
 export class EventoService {
   async getEventByFilter(Evento, pageSize, reqPage) {
     const eventosPorFiltro = await repo.getEventByFilter(Evento, pageSize, reqPage)
 
-    return Eventos;
+    return eventosPorFiltro;
   }
 
   async getEventById(id) {
@@ -94,7 +94,6 @@ export class EventoService {
   }
 
   async patchEvento(Evento) {
-    //arreglalo huevo
 
     const patchEvento = await repo.patchEvento(Evento);
     return "Evento Actualizado";

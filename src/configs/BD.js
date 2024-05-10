@@ -1,7 +1,7 @@
 export const BDconfig={
     host:"localhost",
-    port:3000,
-    user:"crack",
-    password:"kleiman",
-    database:"DAI-Eventos"
+    port:5432,
+    user:"postgres",
+    password:"root",
+    database:"postgres"
 }

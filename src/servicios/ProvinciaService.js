@@ -10,9 +10,7 @@ export class ProvinciaService {
   }
 
   async InsertProvincia(Provincia) {
-    const query = `Insert into provinces(name,full_name,latitude,longitude,display_order) values ("${Provincia.name}","${Provincia.full_name}",${Provincia.latitude},${Provincia.longitude},${Provincia.display_order})`;
-
-    //query.execute();
+    const provincia = repo.insertProvinca(Provincia)
 
     return "Agregado con éxito";
   }
@@ -22,10 +20,6 @@ export class ProvinciaService {
   }
 
   async DeleteProvincia(id) {
-    const query = `Delete from provinces Where id=${id}`;
-
-    //query.execute();
-
-    return "Eliminado con éxito";
+    return await repo.deleteProvincia(id);
   }
 }

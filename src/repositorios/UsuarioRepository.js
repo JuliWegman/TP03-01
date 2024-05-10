@@ -19,16 +19,45 @@ export default class UsuarioRepository{
                 if(result.rows.length>0){
                     returnEnity=result.rows[0];
                 }
-    
-    
             }catch(error){
                 console.log(error)
-    
             }
+
             return returnEnity;
-    
-    
-        
+    }
+
+
+    async getUserByName(user,pass){
+        let returnEnity=null;
+        try{
+            const sql="SELECT * FROM users where username=$1 and password=$2";
+            const values=[user,pass];
+            const result=await this.BDclient.query(sql,values);
+
+            //HASTA ACA FUNCIONA
+            if(result.rows.length>0){
+                returnEnity=result.rows[0];
+            }
+
+        }catch(error){
+            console.log(error)
+        }
+        return returnEnity;
+}
+    async InsertUser(user){
+        let returnEnity=null;
+        try{
+        const sql="Insert into users(first_name,last_name,username,password) values ($1,$2,$3,$4)";
+        const values=[user.first_name,last_name, username, password];
+        const result=await this.BDclient.query(sql,values);
+
+        if(result.rows.length>0){
+            returnEnity=result.rowsAffected[0];
+        }
+
+        }catch(error){
+            console.log(error)
+        }
     }
     
 
