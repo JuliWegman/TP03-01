@@ -138,26 +138,39 @@ export default class EventoRepository {
 
   async patchEvento(Evento) {
     let returnEntity = null;
+    var index = 2;
+    const values = [Evento.id];
+
     try {
-      var sql = `update provinces SET`;
+      var sql = `update events SET`;
       if (Evento.name != null) {
-        sql += ` name=$1,`;
+        sql += ` name=$${index},`;
+        values.push(Evento.name)
+        index++;
       }
 
       if (Evento.description != null) {
-        sql += ` description=$2,`;
+        sql += ` description=$${index},`;
+        values.push(Evento.description)
+        index++;
       }
 
       if (Evento.start_date != null) {
-        sql += ` start_date=$3,`;
+        sql += ` start_date=$${index},`;
+        values.push(Evento.start_date)
+        index++;
       }
 
       if (Evento.duration_in_minutes != null) {
-        sql += ` duration_in_minutes=$4,`;
-      }
+        sql += ` duration_in_minutes=$${index},`;
+        values.push(Evento.duration_in_minutes)
+        index++;
+       }
 
       if (Evento.price != null) {
-        sql += ` price=$5,`;
+        sql += ` price=$${index},`;
+        values.push(Evento.price)
+        index++;     
       }
 
       if (
@@ -165,33 +178,27 @@ export default class EventoRepository {
         (Evento.enabled_for_enrollment == "true" ||
           Evento.enabled_for_enrollment == "false")
       ) {
-        sql += ` enabled_for_enrollment=$6,`;
+        sql += ` enabled_for_enrollment=$${index},`;
+        values.push(Evento.enabled_for_enrollment)
+        index++;   
       }
 
-      if (Evento.max__assistance != null) {
-        sql += ` max__assistance=$7,`;
+      if (Evento.max_assistance != null) {
+        sql += ` max_assistance=$${index},`;
+        values.push(Evento.max_assistance)
+        index++;  
       }
 
       if (sql.endsWith(",")) {
         sql = sql.slice(0, -1);
       }
 
-      sql += ` where id=$8`;
-
-      const values = [
-        Evento.name,
-        Evento.description,
-        Evento.start_date,
-        Evento.duration_in_minutes,
-        Evento.price,
-        Evento.enabled_for_enrollment,
-        Evento.max__assistance,
-        Evento,
-      ];
+      sql += ` where id=$1`;
+      console.log(sql);
       const result = await this.BDclient.query(sql, values);
 
-      if (result.rowsAffected.length > 0) {
-        returnEnity = result.rowsAffected[0];
+      if (result.rowsAffected.length> 0) {
+        returnEntity = result.rowsAffected[0];
       }
     } catch (error) {
       console.log(error);

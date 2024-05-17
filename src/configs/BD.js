@@ -1,6 +1,5 @@
  import "dotenv/config"
 
-console.log(process.env.BD_HOST ,"AAAAAAAAAAA");
 export const BDconfig={
     host:process.env.BD_HOST ?? '',
     port:process.env.BD_PORT ?? 5432,
