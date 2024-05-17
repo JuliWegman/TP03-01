@@ -36,6 +36,7 @@ const ListadoUsers = {
   
   // },
 };
+
 export class UsuarioService {
   async login(user, pass) {
     try{
@@ -47,6 +48,7 @@ export class UsuarioService {
       return "Usuario o Contraseña no existen";
     }
     }catch(error){
+      console.log(error);
       return res.json(error);
 
     }

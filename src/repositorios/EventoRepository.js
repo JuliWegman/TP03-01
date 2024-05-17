@@ -14,7 +14,6 @@ export default class EventoRepository {
     var returnEntity = null;
     try {
       var sql = `SELECT e.name, e.description, ec.name as Category, el.name as Location, e.start_date, e.duration_in_minutes, e.price, e.enabled_for_enrollment, e.max_assistance FROM events e inner join event_categories ec on e.id_event_category=ec.id inner join event_tags et on e.id=et.id_event inner join tags t on et.id_tag=t.id inner join locations el on e.id_event_location = el.id inner join users u on e.id_creator_user = u.id where `;
-      console.log(Evento.id);
       const values = [
         pageSize,
         reqPage,
@@ -42,7 +41,6 @@ export default class EventoRepository {
         index++;
       }
 
-      console.log(sql + "AAAA");
 
       if (sql.endsWith(" and")) {
         sql = sql.slice(0, -4);
@@ -53,12 +51,6 @@ export default class EventoRepository {
       
       sql += " limit $1 offset $2";
       
-      console.log(sql);
-
-      values.forEach(element => {
-        console.log(element);
-      });
-
       const result = await this.BDclient.query(sql, values);
 
       if (result.rows.length > 0) {

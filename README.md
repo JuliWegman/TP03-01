@@ -2,8 +2,9 @@
 
 - Crear funcion EsFecha en Evento Controller
 - Paginacion
-- Register
-- Archivo .env
+- Register HECHO
+- Token y login HECHO
+- Archivo .env HECHO
 - Agregar querys (voy por /id/enrollment)
 - Puntos 11 12 13
 - Provincia service

@@ -7,7 +7,7 @@ const router = express.Router();
 const EventService = new EventoService();
 
 
-router.get("/" , async (req, res) => {
+router.get("/", AuthMiddleware , async (req, res) => {
   const Evento = {};
   const pageSize = 5; // cant de eventos
   const page = 1; // numero de pagina
