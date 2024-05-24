@@ -1,6 +1,5 @@
 import { query } from "express";
 import EventosRepo from "../repositorios/EventoRepository.js"
-// import user 
 
 const repo= new EventosRepo();
 

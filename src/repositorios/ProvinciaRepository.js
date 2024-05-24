@@ -19,6 +19,7 @@ export default class ProvinciaRepository{
             if(result.rows.length>0){
                 returnEnity=result.rows[0];
             }
+            
 
 
         }catch(error){
@@ -48,44 +49,61 @@ export default class ProvinciaRepository{
 
     }
 
-    async patchProvincia(Provincia){
-        let returnEnity=null;
-        try{
-            var sql = "update provinces SET(";
+    async patchProvincia(Provincia){        
+            let returnEntity = null;
+            var index = 2;
+            const values = [Provincia.id];
         
-            if (Provincia.name != null) {
-            sql += ` name=$1,`;
+            try {
+              var sql = `update provinces SET`;
+              if (Provincia.name != null) {
+                sql += ` name=$${index},`;
+                values.push(Provincia.name)
+                index++;
+              }
+        
+              if (Provincia.full_name != null) {
+                sql += ` full_name=$${index},`;
+                values.push(Provincia.full_name)
+                index++;
+              }
+        
+              if (Provincia.latitude!= null) {
+                sql += ` latitude=$${index},`;
+                values.push(Provincia.latitude)
+                index++;
+              }
+        
+              if (Provincia.longitude!= null) {
+                sql += ` longitude=$${index},`;
+                values.push(Provincia.longitude)
+                index++;
+               }
+        
+              if (Provincia.display_order!= null) {
+                sql += ` display_order=$${index},`;
+                values.push(Provincia.display_order)
+                index++;     
+              }
+        
+              if (sql.endsWith(",")) {
+                sql = sql.slice(0, -1);
+              }
+        
+              sql += ` where id=$1`;
+              console.log(sql);
+        
+              const result = await this.BDclient.query(sql, values);
+              returnEntity=result.rowsAffected;
+        
+        
+            } catch (error) {
+              console.log(error);
             }
-            if (Provincia.full_name != null) {
-            sql += ` full_Name=$2,`;
-            }
-            if (Provincia.latitude != null) {
-            sql += ` latitude=$3,`;
-            }
-            if (Provincia.longitude != null) {
-            sql += ` longitude=$4,`;
-            }
-            if (Provincia.display_order != null) {
-            sql += ` display_order=$5,`;
-            }
-            if (sql.endsWith(",")) {
-            sql = sql.slice(0, -1);
-            }
-            sql += `) where id=$6`;
 
-            const values=[Provincia.name,Provincia.full_name,Provincia.latitude,Provincia.longitude,Provincia.display_order,Provincia.id];
-            const result=await this.BDclient.query(sql,values);
-
-            if(result.rowsAffected.length>0){
-                returnEnity=result.rowsAffected[0];
-            }
-
-        }catch(error){
-            console.log(error)
+            return returnEntity;
         }
-
-    return returnEnity;
-    }
+    
 
     async deleteProvincia(id){
         var returnEntity = null;
@@ -103,4 +121,7 @@ export default class ProvinciaRepository{
         return returnEntity;
     }
     
+    async insertProvincia(Provincia){
+        
+    }
 }

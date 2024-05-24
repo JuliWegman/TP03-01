@@ -7,7 +7,7 @@ const router = express.Router();
 const EventService = new EventoService();
 
 
-router.get("/", AuthMiddleware , async (req, res) => {
+router.get("/" , async (req, res) => {
   const Evento = {};
   const pageSize = 5; // cant de eventos
   const page = 1; // numero de pagina
@@ -127,8 +127,6 @@ router.get("/:id/enrollment", async (req, res) => {
   //   return res.json("error no es booleano AHREEE");
   // }
 });
-
-//HASTA ACA
 
 router.post("/:id/enrollment", AuthMiddleware , async (req, res) => {
   const enrollment = {};

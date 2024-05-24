@@ -31,6 +31,24 @@ router.get("/:id", async (req, res) => {
     if (provincia!=null) {
       return res.status(200).json(provincia);
     }else{
+      return res.status(404).json("No existe la id");
+
+    }
+  } catch (error) {
+    console.log(error);
+    return res.json(error);
+  }
+});
+
+router.get("/:id/locations", async (req, res) => {
+  const pageSize = req.query.pageSize;
+  const reqPage = req.query.reqPage;
+  const id=req.params.id
+  try {
+    const localidades = await ProvService.getLocalidadesByProvincia(id);
+    if (provincia!=null) {
+      return res.status(200).json(localidades);
+    }else{
       return res.status(401).json("No existe la id");
 
     }
@@ -40,37 +58,61 @@ router.get("/:id", async (req, res) => {
   }
 });
 
-router.post("/", AuthMiddleware , async (req, res) => {
-  const Provincia = {};
-  Provincia.name = req.query.name;
-  Provincia.full_name = req.query.full_name;
-  Provincia.latitude = req.query.latitude;
-  Provincia.longitude = req.query.longitude;
-  Provincia.display_order = req.query.display_order;
+router.post("/",async (req, res) =>{
+const Provincia={}
+Provincia.name=req.body.name
+Provincia.full_name=req.body.full_name
+Provincia.latitude=req.body.latitude
+Provincia.longitude=req.body.longitude
+Provincia.display_order=req.body.display_order
 
-  //arreglar body
+try {
+  if(Provincia.name!=null && Provincia.full_name!=null && Provincia.latitude!=null && Provincia.longitude!=null && Provincia.display_order!=null){
 
-  ;try {
-    const respuesta = await ProvService.InsertProvincia(Provincia);
-    return res.json(respuesta);
-  } catch (error) {
-    console.log(error);
-    return res.json(error);
+    if(!(Number.isNaN(Provincia.latitude)) && !(Number.isNaN(Provincia.longitude) && Provincia.name.length>3)){
+
+      const respuesta = await ProvService.InsertProvincia(Provincia);
+      return res.status(201).json(respuesta);
+
+    }else{
+      return res.status(400).send("Algun dato esta mal");
+    }
+  }else{
+    return res.status(400).send("Faltan datos");
   }
-});
+} catch (error) {
+  console.log(error);
+  return res.json(error);
+}
+})
 
-router.patch("/", AuthMiddleware , async(req, res) => {
+router.put("/" , async(req, res) => {
   const Provincia = {};
-  Provincia.name = req.query.name;
-  Provincia.full_name = req.query.full_name;
-  Provincia.latitude = req.query.latitude;
-  Provincia.longitude = req.query.longitude;
-  Provincia.display_order = req.query.display_order;
-  Provincia.id = req.query.id;
-
+  Provincia.name = req.body.name;
+  Provincia.full_name = req.body.full_name;
+  Provincia.latitude = req.body.latitude;
+  Provincia.longitude = req.body.longitude;
+  Provincia.display_order = req.body.display_order;
+  Provincia.id = req.body.id;
   try {
-    const respuesta = await ProvService.patchProvincia(Provincia);
-    return res.json(respuesta);
+    const Prov=await ProvService.getProvinciaById(Provincia.id)
+    console.log(Prov);
+
+    if(Prov!=null){
+      if(Provincia.name!=null && Provincia.full_name!=null && Provincia.latitude!=null && Provincia.longitude!=null && Provincia.display_order!=null){
+
+        if(!(Number.isNaN(Provincia.latitude)) && !(Number.isNaN(Provincia.longitude) && Provincia.name.length>3)){
+    
+          const respuesta = await ProvService.patchProvincia(Provincia);
+          return res.status(201).json(respuesta);
+    
+        }else{
+          return res.status(400).send("Algun dato esta mal");
+        }
+      }else{
+        return res.status(400).send("Faltan datos");
+      }
+    }
   } catch (error) {
     console.log(error);
     return res.json(error);
