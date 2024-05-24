@@ -5,67 +5,7 @@ import EventosRepo from "../repositorios/EventoRepository.js"
 const repo= new EventosRepo();
 
 
-const Eventos = {
-  collection: [
-    {
-      id: 2,
-      name: "Taylor Swift",
-      description: "Un alto show",
-      start_date: "2024-03-21T03:00:00.000Z",
-      duration_in_minutes: 210,
-      price: "15500",
-      enabled_for_enrollment: true,
-      max_assistance: 120000,
-      tags: ["Rock", "Pop"],
-      creator_user: {
-        id: 3,
-        username: "Jschiffer",
-        first_name: "Julian",
-        last_name: "Schiffer",
-      },
-      event_category: {
-        id: 1,
-        name: "Musica",
-      },
-      event_location: {
-        id: 1,
-        name: "River",
-        full_address: "Av. Pres. Figueroa Alcorta 7597",
-        latitude: -34.5453,
-        longitude: -58.4498,
-        max_capacity: "84567",
-      },
-    },
-    {
-      id: 3,
-      name: "Taylor Swift",
-      description: "Un alto show",
-      start_date: "2024-03-21T03:00:00.000Z",
-      duration_in_minutes: 210,
-      price: "15500",
-      enabled_for_enrollment: true,
-      max_assistance: 120000,
-      tags: ["Rock", "Pop"],
-      creator_user: {
-        id: 3,
-        username: "Jschiffer",
-        first_name: "Julian",
-        last_name: "Schiffer",
-      },
-      event_category: {
-        id: 1,
-        name: "Musica",
-      },
-      event_location: {
-        id: 1,
-        name: "River",
-        full_address: "Av. Pres. Figueroa Alcorta 7597",
-        latitude: -34.5453,
-        longitude: -58.4498,
-        max_capacity: "84567",
-      },
-    },
-  ],
+
   // pagination: {
   //   pagination:{limit:parsedLimit,
   //     offset:parsedOffset,
@@ -73,7 +13,6 @@ const Eventos = {
   //     total:totalCount}
   
   // },
-};
 
 export class EventoService {
   async getEventByFilter(Evento, pageSize, reqPage) {
@@ -105,22 +44,15 @@ export class EventoService {
     return "Eliminado con éxito";
   }
 
-  async InscripcionEvento(enrollment, id) {
-    const evento = EventoService2.getEventById(id);
-    // const users = user.getbyid
-    const users = {
-      id:2,
-      nombre: "joaquin"
-    }
-
-    const InscripcionAEvento = await repo.InscripcionEvento(enrollment, evento, users)
-    return InscripcionAEvento;
+  async InscripcionEvento(enrollment) {
+    await repo.InscripcionEvento(enrollment);
+    return "Inscripto con exito";
   }
 
   async CambiarRating(id, rating) {
-    //query.execute();
-    const UpdateRating = await repo.UpdateRating(rating,id)
-    return UpdateRating;
+
+    await repo.UpdateRating(rating,id)
+    return "rating actualizado";
   }
 
   async InsertEvento(evento) {

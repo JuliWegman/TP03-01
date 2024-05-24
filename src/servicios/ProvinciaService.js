@@ -9,6 +9,10 @@ export class ProvinciaService {
     return await repo.getProvincias();  
   }
 
+  async getProvinciaById(id){
+    return await repo.getProvinciaById(id);
+  }
+
   async InsertProvincia(Provincia) {
     const provincia = repo.insertProvinca(Provincia)
 

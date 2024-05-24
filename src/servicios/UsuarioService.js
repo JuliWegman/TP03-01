@@ -57,9 +57,8 @@ export class UsuarioService {
   }
 
   async register(user) {
-    
+    await repo.InsertUser(user)
 
-    //query.execute();
   }
 
   async getUserByPayload(user,pass){

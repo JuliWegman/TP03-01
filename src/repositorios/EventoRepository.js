@@ -216,49 +216,40 @@ export default class EventoRepository {
     }
   }
 
-  async InscripcionEvento(enrollment, evento, users) {
-    var returnEntity = null
+  async InscripcionEvento(enrollment) {
     try {
       var sql = ""
-      if (evento.enabled_for_enrollment) {
-        sql = `Insert INTO event_enrollment (id_event, id_user, description, registration_date_time,attended,observations,rating) VALUES ($1,$2,$3,$4,$5,$6,$7)`;
-      }else return returnEntity;
+      if (enrollment.enabled) {
+        sql = `Insert INTO event_enrollments (id_event, id_user, description, registration_date_time,attended,observations,rating) VALUES ($1,$2,$3,$4,$5,$6,$7)`;
+      }else return "Error";
+      const date = new Date();
+      const fecha = `${date.getFullYear()}-${date.getMonth()}-${date.getDate()} `
+      const values = [enrollment.idEvento, enrollment.user_id,enrollment.description, fecha,enrollment.attended, enrollment.observations, enrollment.rating]
+      await this.BDclient.query(sql, values);
 
-      const values = [evento.id, users.id,enrollment.description, Date.now(),enrollment.attended, enrollment.observations, enrollment.rating]
-      const result = await this.BDclient.query(sql, values);
 
-      if (result.rowsAffected.length > 0) {
-        returnEntity = result.rowsAffected[0];
-      }
     } catch (error) {
       console.log(error);
     }
-    return returnEntity
   }
 
   async UpdateRating(rating,id) {
-    var returnEntity = null;
     try {
       const sql = `update event_enrollments SET rating=$1 WHERE id=$2`;
       const values = [rating,id];
-      const result = await this.BDclient.query(sql, values);
+      await this.BDclient.query(sql, values);
 
-      if (result.rowsAffected.length > 0) {
-        returnEntity = result.rowsAffected[0];
-      }
     } catch (error) {
       console.log(error);
     }
-    return returnEntity;
   } 
 
   async InsertEvento(evento) {
-    var returnEntity = null;
     try {
       console.log(evento);
       const sql = `Insert into events(name,description,id_event_category,id_event_location,start_date,duration_in_minutes,price,enabled_for_enrollment,max_assistance, id_creator_user) values ($1,$9,$2,$3,$4,$5,$6,$7,$8, $10)`;
       const values = [evento.name ,evento.id_event_category, evento.id_event_location, evento.start_date, evento.duration_in_minutes, evento.price, evento.enabled_for_enrollment, evento.max_assistance, evento.description, evento.id_creator_user];
-      const result = await this.BDclient.query(sql, values);
+      await this.BDclient.query(sql, values);
 
     } catch (error) {
       console.log(error);

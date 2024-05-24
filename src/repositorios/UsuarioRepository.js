@@ -45,15 +45,10 @@ export default class UsuarioRepository{
         return returnEnity;
 }
     async InsertUser(user){
-        let returnEnity=null;
         try{
         const sql="Insert into users(first_name,last_name,username,password) values ($1,$2,$3,$4)";
-        const values=[user.first_name,last_name, username, password];
-        const result=await this.BDclient.query(sql,values);
-
-        if(result.rows.length>0){
-            returnEnity=result.rowsAffected[0];
-        }
+        const values=[user.first_name,user.last_name, user.username, user.password];
+        await this.BDclient.query(sql,values);
 
         }catch(error){
             console.log(error)

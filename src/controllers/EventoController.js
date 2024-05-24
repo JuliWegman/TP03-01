@@ -56,7 +56,6 @@ router.post("/",AuthMiddleware, async (req, res) => {
   Evento.enabled_for_enrollment = req.query.enabled_for_enrollment;
   Evento.max_assistance = req.query.max_assistance;
   Evento.id_creator_user = req.user.id;
-  //arreglar body
   
   try {
     const respuesta = await EventService.InsertEvento(Evento);;
@@ -94,7 +93,12 @@ router.get("/:id", async (req, res) => {
   console.log(id);
   try {
     const EventById = await EventService.getEventById(id);
-    return res.json(EventById);
+    if (EventById!=null) {
+      return res.status(200).json(EventById);
+    }else{
+      return res.status(401).json("No existe la id");
+
+    }
   } catch (error) {
     console.log(error);
     return res.json(error);
@@ -128,27 +132,32 @@ router.get("/:id/enrollment", async (req, res) => {
 
 router.post("/:id/enrollment", AuthMiddleware , async (req, res) => {
   const enrollment = {};
+  const evento = await EventService.getEventById(req.params.id)
 
   enrollment.idEvento = req.params.id;
   enrollment.attended = req.query.attended;
   enrollment.rating = req.query.rating;
   enrollment.descripcion = req.query.descripcion;
   enrollment.observations = req.query.observations;
+  enrollment.user_id = req.user.id; 
+  enrollment.enabled = evento.enabled_for_enrollment
+
   try {
-    const mensaje = await EventService.InscripcionEvento(enrollment);
-    return res.json(mensaje);
+    await EventService.InscripcionEvento(enrollment);
+    return res.json("Inscripto en el evento cheto");
   } catch (error) {
     console.log(error);
     return res.json(error);
   }
 });
 
-router.patch("/:id/enrollment",AuthMiddleware, (req, res) => {
+router.patch("/:id/enrollment",AuthMiddleware,async (req, res) => {
   const idEvento = req.params.id;
   const rating = req.query.rating;
   try {
-    const mensaje = EventService.CambiarRating(idEvento, rating);
-    return res.json(mensaje);
+    const mensaje = await EventService.CambiarRating(idEvento, rating);
+    console.log(mensaje);
+    return res.status(200).send(mensaje);
   } catch (error) {
     console.log(error);
     return res.json(error);

@@ -9,14 +9,33 @@ export default class ProvinciaRepository{
         this.BDclient.connect();
     }
 
+    async getProvinciaById(id){
+        let returnEnity=null;
+        try{
+            const sql="select * from provinces where id=$1";
+            const values=[id];
+            const result=await this.BDclient.query(sql,values);
+            
+            if(result.rows.length>0){
+                returnEnity=result.rows[0];
+            }
+
+
+        }catch(error){
+            console.log(error)
+
+        }
+        return returnEnity;
+    }
+
     async getProvincias(){
         let returnEnity=null;
         try{
             const sql="select * from provinces";
-            const result=await this.BDclient.query(sql,values);
-
+            const result=await this.BDclient.query(sql);
+            
             if(result.rows.length>0){
-                returnEnity=result.rows[0];
+                returnEnity=result.rows;
             }
 
 

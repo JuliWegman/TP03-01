@@ -12,10 +12,28 @@ const ProvService = new ProvinciaService();
 
 router.get("/", async (req, res) => {
   const pageSize = req.query.pageSize;
-  const reqPage = req.query.pageSize;
+  const reqPage = req.query.reqPage;
   try {
     const provincias = await ProvService.getProvincias(pageSize, reqPage);
-    return res.json(provincias);
+    return res.status(200).json(provincias);
+  } catch (error) {
+    console.log(error);
+    return res.json(error);
+  }
+});
+
+router.get("/:id", async (req, res) => {
+  const pageSize = req.query.pageSize;
+  const reqPage = req.query.reqPage;
+  const id=req.params.id
+  try {
+    const provincia = await ProvService.getProvinciaById(id);
+    if (provincia!=null) {
+      return res.status(200).json(provincia);
+    }else{
+      return res.status(401).json("No existe la id");
+
+    }
   } catch (error) {
     console.log(error);
     return res.json(error);
