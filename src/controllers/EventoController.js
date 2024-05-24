@@ -124,6 +124,8 @@ router.get("/:id/enrollment", async (req, res) => {
   // }
 });
 
+//HASTA ACA
+
 router.post("/:id/enrollment", AuthMiddleware , async (req, res) => {
   const enrollment = {};
 
