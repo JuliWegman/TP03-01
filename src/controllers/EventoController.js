@@ -36,8 +36,8 @@ router.get("/", AuthMiddleware , async (req, res) => {
 router.delete("/", AuthMiddleware , (req, res) => {
   const id = req.query.id;
   try {
-    const respuesta = EventService.DeleteEvent(id);
-    return res.json(respuesta);4
+    EventService.DeleteEvent(id);
+    return res.send("Borradisimo");4
   } catch (error) {
     console.log(error);
     return res.json(error);
@@ -48,12 +48,14 @@ router.post("/",AuthMiddleware, async (req, res) => {
   const Evento = {};
   Evento.name = req.query.name;
   Evento.description = req.query.description;
+  Evento.id_event_category = req.query.id_event_category
+  Evento.id_event_location = req.query.id_event_location
   Evento.start_date = req.query.start_date;
   Evento.duration_in_minutes = req.query.duration_in_minutes;
   Evento.price = req.query.price;
   Evento.enabled_for_enrollment = req.query.enabled_for_enrollment;
-  Evento.max__assistance = req.query.max__assistance;
-
+  Evento.max_assistance = req.query.max_assistance;
+  Evento.id_creator_user = req.user.id;
   //arreglar body
   
   try {
@@ -77,7 +79,7 @@ router.patch("/",AuthMiddleware, async (req, res) => {
   Evento.max__assistance = req.query.max__assistance;
 
   Evento.id = req.query.id;
-
+  console.log(Evento.id);
   try {
     const respuesta = await EventService.patchEvento(Evento);
     return res.json(respuesta);
@@ -101,7 +103,7 @@ router.get("/:id", async (req, res) => {
 
 router.get("/:id/enrollment", async (req, res) => {
   const enrollment = {};
-  enrollment.id = req.params.id;
+  enrollment.event_id = req.params.id;
   enrollment.nombreEv = req.query.name;
   enrollment.firstName = req.query.firstName;
   enrollment.lastName = req.query.lastName;
@@ -110,9 +112,7 @@ router.get("/:id/enrollment", async (req, res) => {
   enrollment.rating = req.query.rating;
 
   // if (enrollment.attended == "true" || enrollment.attended == "false" || enrollment.attended == null || 1==1) {
-    console.log("tamos chelo");
     try {
-      console.log("HOLAAAAAA");
       const x = await EventService.getEventEnrollment(enrollment);
       return res.json(x);
     } catch (error) {

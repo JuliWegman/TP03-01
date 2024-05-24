@@ -81,9 +81,9 @@ export default class EventoRepository {
   async getEventEnrollment(enrollment) {
     let returnEntity = null;
     try {
-      var sql = `select ev.id,ev.name as Nombre, u.first_name as UserNombre, u.last_name as UserApellido, u.username, ee.atended, ee.rating from events ev inner join event_enrollments ee on ev.id=ee.id_event inner join on users u ev.id_user = u.id where ev.id=$7 and `;
-      var index = 1;
-      const values = [];
+      var sql = `select ev.id,ev.name as Nombre, u.first_name as UserNombre, u.last_name as UserApellido, u.username, ee.attended, ee.rating from events ev inner join event_enrollments ee on ev.id=ee.id_event inner join users u on ev.id_creator_user = u.id where ev.id=$1 and `;
+      var index = 2;
+      const values = [enrollment.event_id];
 
       if (enrollment.nombreEv != null) {
         sql += ` ev.name=$${index} and`;
@@ -115,14 +115,15 @@ export default class EventoRepository {
         values.push(enrollment.attended)
         index++;
       }
-      if (sql.endsWith(" and")) {
-        sql = sql.slice(0, -4);
+
+
+
+      if (sql.endsWith(" and ")) {
+        sql = sql.slice(0, -5);
       }
       if (sql.endsWith(" and where")) {
         sql = sql.slice(0, -10);
       }
-
-
 
       const result = await this.BDclient.query(sql, values);
 
@@ -195,31 +196,24 @@ export default class EventoRepository {
 
       sql += ` where id=$1`;
       console.log(sql);
+
       const result = await this.BDclient.query(sql, values);
 
-      if (result.rowsAffected.length> 0) {
-        returnEntity = result.rowsAffected[0];
-      }
+
     } catch (error) {
       console.log(error);
     }
-    return returnEntity;
   }
 
   async DeleteEvent(id) {
-    var returnEntity = null;
     try {
-      const sql = `Delete from provinces Where id=1`;
+      const sql = `Delete from events Where id=$1`;
       const values = [id];
-      const result = await this.BDclient.query(sql, values);
+      await this.BDclient.query(sql, values);
 
-      if (result.rowsAffected.length > 0) {
-        returnEnity = result.rowsAffected[0];
-      }
     } catch (error) {
       console.log(error);
     }
-    return returnEntity;
   }
 
   async InscripcionEvento(enrollment, evento, users) {
@@ -261,17 +255,14 @@ export default class EventoRepository {
   async InsertEvento(evento) {
     var returnEntity = null;
     try {
-      const sql = `Insert into events(name,description,id_event_category,id_event_location,start_date,duration_in_minutes,price,enabled_for_enrollment,max__assistance) values ("1","$9","$2","$3","$4","$5,"$6","$7","$8")`;
-      const values = [evento.name, evento.id_event_category, evento.id_event_location, evento.start_date, evento.duration_in_minutes, evento.price, evento.enabled_for_enrollment, evento.max_assistance, evento.description];
+      console.log(evento);
+      const sql = `Insert into events(name,description,id_event_category,id_event_location,start_date,duration_in_minutes,price,enabled_for_enrollment,max_assistance, id_creator_user) values ($1,$9,$2,$3,$4,$5,$6,$7,$8, $10)`;
+      const values = [evento.name ,evento.id_event_category, evento.id_event_location, evento.start_date, evento.duration_in_minutes, evento.price, evento.enabled_for_enrollment, evento.max_assistance, evento.description, evento.id_creator_user];
       const result = await this.BDclient.query(sql, values);
 
-      if (result.rowsAffected.length > 0) {
-        returnEntity = result.rowsAffected[0];
-      }
     } catch (error) {
       console.log(error);
     }
-    return returnEntity;
   }  
 }
 

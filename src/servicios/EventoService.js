@@ -95,14 +95,13 @@ export class EventoService {
 
   async patchEvento(Evento) {
 
-    const patchEvento = await repo.patchEvento(Evento);
+    await repo.patchEvento(Evento);
     return "Evento Actualizado";
   }
 
   async DeleteEvent(id) {
 
-    const DeleteEvento = await repo.DeleteEvent(id);
-
+   await repo.DeleteEvent(id);
     return "Eliminado con éxito";
   }
 
@@ -126,7 +125,7 @@ export class EventoService {
 
   async InsertEvento(evento) {
 
-    const respuesta=await repo.InsertEvento(evento);
-    return respuesta;
+    await repo.InsertEvento(evento);
+    return "insertado con exito";
   }
 }
