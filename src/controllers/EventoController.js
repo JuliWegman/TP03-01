@@ -9,13 +9,14 @@ const EventService = new EventoService();
 
 router.get("/" , async (req, res) => {
   const Evento = {};
-  const pageSize = 5; // cant de eventos
-  const page = 1; // numero de pagina
+  const pageSize = req.query.pageSize; // cant de eventos
+  const page = req.query.reqPage; // numero de pagina
   const URL=req.originalUrl; // url de la siguiente página
   Evento.name = req.query.name;
   Evento.category = req.query.category;
   Evento.startDate = req.query.startDate;
   Evento.tag = req.query.tag;
+  
   req.user;
 
   try {
@@ -67,7 +68,7 @@ router.post("/",AuthMiddleware, async (req, res) => {
   
 });
 
-router.patch("/",AuthMiddleware, async (req, res) => {
+router.put("/",AuthMiddleware, async (req, res) => {
   const Evento = {};
   Evento.name = req.query.name;
   Evento.description = req.query.description;
@@ -76,7 +77,6 @@ router.patch("/",AuthMiddleware, async (req, res) => {
   Evento.price = req.query.price;
   Evento.enabled_for_enrollment = req.query.enabled_for_enrollment;
   Evento.max__assistance = req.query.max__assistance;
-
   Evento.id = req.query.id;
   console.log(Evento.id);
   try {

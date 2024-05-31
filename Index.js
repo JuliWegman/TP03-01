@@ -4,6 +4,7 @@ import routerUsuario from "./src/controllers/UsuarioController.js";
 import routerProvincia from "./src/controllers/ProvinciaController.js";
 import routerLocalidad from './src/controllers/LocalidadController.js'
 import routerCategoria from './src/controllers/CategoryController.js'
+import routerEventLocation from './src/controllers/Event-LocationController.js'
 import { BDconfig } from "./src/configs/BD.js";
 import "dotenv/config"
 
@@ -15,6 +16,7 @@ app.use("/user", routerUsuario);
 app.use("/provincia", routerProvincia);
 app.use("/localidad", routerLocalidad);
 app.use("/categoria", routerCategoria);
+app.use("/event-location",routerEventLocation);
 
 app.listen(process.env.PORT, () => {
   console.log("server is running");

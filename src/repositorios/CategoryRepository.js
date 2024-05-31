@@ -28,22 +28,77 @@ export default class CategoriaRepository {
     return returnEnity;
 }
 
-async getLocalidadesByProvincia(id_provincia){
+async getCategoriaById(id){
     let returnEnity=null;
     try{
-        const sql="select * from locations where id_province=$1";
-        const values=[id_provincia];
+        const sql="select * from event_categories where id=$1";
+        const values=[id];
         const result=await this.BDclient.query(sql,values);
         
-        if(result.rows.length>0){
-            returnEnity=result.rows;
-        }
+        returnEnity=result.rows;
+        
 
 
     }catch(error){
         console.log(error)
-
     }
     return returnEnity;
 }
+
+async insertCategoria(Categoria){
+    try{
+        const sql="INSERT INTO event_categories (name, display_order) VALUES ($1, $2)";
+        const values=[Categoria.name, Categoria.display_order];
+        await this.BDclient.query(sql,values);
+    }catch(error){
+        console.log(error)
+    }
+}
+
+async updateCategoria(categoria){
+
+    try {
+        var sql = "UPDATE event_categories SET "
+        var index=2;
+        const values = [categoria.id]
+
+        if (categoria.name != null) {
+            sql += `name = $${index},`
+            values.push(categoria.name)
+            index++;
+        }
+
+        if (categoria.display_order != null) {
+            sql += `display_order = $${index}`
+            values.push(categoria.display_order)
+            index++;
+        }
+
+        if (sql.endsWith(",")) {
+            sql = sql.slice(0, -1);
+        }
+
+        
+        sql += " where id=$1"
+        
+        console.log(sql);
+        await this.BDclient.query(sql,values);
+
+
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+async deleteCategoria(id){
+    try {
+        const sql = "Delete FROM event_categories where id = $1"
+        const values = [id]
+
+        await this.BDclient.query(sql,values)
+    } catch (error) {
+        console.log(error);
+    }
+}
+
 }

@@ -1,21 +1,22 @@
 import { query } from "express";
 import EventosRepo from "../repositorios/EventoRepository.js"
-
+import { Pagination, PaginationDto } from "../utils/Paginacion.js";
 const repo= new EventosRepo();
 
-
-
-  // pagination: {
-  //   pagination:{limit:parsedLimit,
-  //     offset:parsedOffset,
-  //     nextPage:((parsedOffset+1) *parsedLimit<=totalCount) ?`${process.env.BASE_URL}/${path}?limit=${parsedLimit}&offset=${parsedOffset+1}${(eventName) ?`&eventName=${eventName}`:null}${(eventCategory) ?`&eventCategory=${eventCategory}` : null}${(eventDate) ?`&eventDate=${eventDate}`:null}${(eventTag) ?`&eventTag=${eventTag}`:null}`:null,
-  //     total:totalCount}
+const PaginacionConfig = new Pagination();
   
-  // },
+  
 
 export class EventoService {
   async getEventByFilter(Evento, pageSize, reqPage) {
+    const parsedLimit = PaginacionConfig.parseLimit(pageSize) 
+    const parsedOffset = PaginacionConfig.parseOffset(reqPage)
+
+    const cantidad = await repo.cantEventos();
+    const nextPage=((parsedOffset+1) * parsedLimit<=cantidad) ?`${process.env.BASE_URL}/${path}?limit=${parsedLimit}&offset=${parsedOffset+1}${(Evento.name) ?`&name=${Evento.name}`:null}${(Evento.category) ?`&id_event_category=${Evento.category}` : null}${(eventDate) ?`&eventDate=${eventDate}`:null}${(eventTag) ?`&eventTag=${eventTag}`:null}`:null
+    const pagina = PaginacionConfig.buildPaginationDto(PaginacionConfig.parseLimit(pageSize), PaginacionConfig.parseOffset(reqPage), cantidad, nextPage)
     const eventosPorFiltro = await repo.getEventByFilter(Evento, pageSize, reqPage)
+
 
     return eventosPorFiltro;
   }

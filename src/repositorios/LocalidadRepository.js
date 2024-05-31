@@ -11,9 +11,9 @@ export default class LocalidadRepository {
   }
 
 
-  async getLocalidades(){
-    let returnEnity=null;
-    try{
+    async getLocalidades(){
+        let returnEnity=null;
+        try{
         const sql="select * from locations";
         const result=await this.BDclient.query(sql);
         
@@ -22,29 +22,45 @@ export default class LocalidadRepository {
         }
 
 
-    }catch(error){
+        }catch(error){
         console.log(error)
 
-    }
-    return returnEnity;
-}
-
-async getLocalidadesByProvincia(id_provincia){
-    let returnEnity=null;
-    try{
-        const sql="select * from locations where id_province=$1";
-        const values=[id_provincia];
-        const result=await this.BDclient.query(sql,values);
-        
-        if(result.rows.length>0){
-            returnEnity=result.rows;
         }
-
-
-    }catch(error){
-        console.log(error)
-
+     return returnEnity;
     }
-    return returnEnity;
-}
+    
+    async getLocalidadById(id){
+        let returnEntity = null;
+        try {
+      var sql = `Select * from locations where id=$1`;
+      const values = [id];
+      const result = await this.BDclient.query(sql, values);
+
+      if (result.rows.length > 0) {
+        returnEntity = result.rows[0];
+      }
+        } catch (error) {
+      console.log(error);
+        }
+        return returnEntity;
+    }
+
+    async getLocalidadesByProvincia(id_provincia){
+        let returnEnity=null;
+        try{
+            const sql="select * from locations where id_province=$1";
+            const values=[id_provincia];
+            const result=await this.BDclient.query(sql,values);
+            
+            if(result.rows.length>0){
+                returnEnity=result.rows;
+            }
+
+
+        }catch(error){
+            console.log(error)
+
+        }
+        return returnEnity;
+    }
 }

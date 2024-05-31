@@ -18,7 +18,7 @@ export class ProvinciaService {
   }
 
   async InsertProvincia(Provincia) {
-    await repo.insertProvinca(Provincia)
+    await repo.insertProvincia(Provincia)
   }
 
   async patchProvincia(Provincia) {

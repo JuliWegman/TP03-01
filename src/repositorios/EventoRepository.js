@@ -10,6 +10,19 @@ export default class EventoRepository {
     this.BDclient.connect();
   }
 
+  async cantEventos() {
+    var returnEntity = 0;
+
+    try {
+      var sql = "SELECT COUNT(*) FROM events"
+      const result = await this.BDclient.query(sql)
+      console.log(result.rows);
+      return result.rows[0]
+    } catch (error) {
+      return error;
+    }
+  }
+
   async getEventByFilter(Evento, pageSize, reqPage) {
     var returnEntity = null;
     try {

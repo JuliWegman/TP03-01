@@ -49,7 +49,7 @@ export default class ProvinciaRepository{
 
     }
 
-    async patchProvincia(Provincia){        
+    async patchProvincia(Provincia){
             let returnEntity = null;
             var index = 2;
             const values = [Provincia.id];
@@ -102,8 +102,7 @@ export default class ProvinciaRepository{
             }
 
             return returnEntity;
-        }
-    
+    }
 
     async deleteProvincia(id){
         var returnEntity = null;
@@ -113,7 +112,7 @@ export default class ProvinciaRepository{
           const result = await this.BDclient.query(sql, values);
     
           if (result.rowsAffected.length > 0) {
-            returnEnity = result.rowsAffected[0];
+            returnEntity = result.rowsAffected[0];
           }
         } catch (error) {
           console.log(error);
@@ -122,6 +121,15 @@ export default class ProvinciaRepository{
     }
     
     async insertProvincia(Provincia){
+      let returnEntity=null;
+      try {
+      const sql = `Insert into provinces(name,full_name,latitude,longitude,display_order) values ($1,$2,$3,$4,$5)`;
+      const values = [ Provincia.name , Provincia.full_name , Provincia.latitude , Provincia.longitude , Provincia.display_order ];
+      returnEntity=await this.BDclient.query(sql, values);
         
+      }catch (error) {
+      console.log(error);
+      }
+      return returnEntity;
     }
 }

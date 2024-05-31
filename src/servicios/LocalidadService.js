@@ -11,6 +11,12 @@ export class LocalidadService {
         return await repo.getLocalidades();  
     }
 
+    async getLocalidadById(id){
+        return await repo.getLocalidadById(id);  
+    }
+    
+   
+
     
     
 

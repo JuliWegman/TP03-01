@@ -23,8 +23,6 @@ router.get("/", async (req, res) => {
 });
 
 router.get("/:id", async (req, res) => {
-  const pageSize = req.query.pageSize;
-  const reqPage = req.query.reqPage;
   const id=req.params.id
   try {
     const provincia = await ProvService.getProvinciaById(id);
@@ -59,31 +57,31 @@ router.get("/:id/locations", async (req, res) => {
 });
 
 router.post("/",async (req, res) =>{
-const Provincia={}
-Provincia.name=req.body.name
-Provincia.full_name=req.body.full_name
-Provincia.latitude=req.body.latitude
-Provincia.longitude=req.body.longitude
-Provincia.display_order=req.body.display_order
+  const Provincia={}
+  Provincia.name=req.body.name
+  Provincia.full_name=req.body.full_name
+  Provincia.latitude=req.body.latitude
+  Provincia.longitude=req.body.longitude
+  Provincia.display_order=req.body.display_order
 
-try {
-  if(Provincia.name!=null && Provincia.full_name!=null && Provincia.latitude!=null && Provincia.longitude!=null && Provincia.display_order!=null){
+  try {
+    if(Provincia.name!=null && Provincia.full_name!=null && Provincia.latitude!=null && Provincia.longitude!=null && Provincia.display_order!=null){
 
-    if(!(Number.isNaN(Provincia.latitude)) && !(Number.isNaN(Provincia.longitude) && Provincia.name.length>3)){
+      if(!(Number.isNaN(Provincia.latitude)) && !(Number.isNaN(Provincia.longitude) && Provincia.name.length>3)){
 
-      const respuesta = await ProvService.InsertProvincia(Provincia);
-      return res.status(201).json(respuesta);
+        const respuesta = await ProvService.InsertProvincia(Provincia);
+        return res.status(201).json(respuesta);
 
+      }else{
+        return res.status(400).send("Algun dato esta mal");
+      }
     }else{
-      return res.status(400).send("Algun dato esta mal");
+      return res.status(400).send("Faltan datos");
     }
-  }else{
-    return res.status(400).send("Faltan datos");
+  } catch (error) {
+    console.log(error);
+    return res.json(error);
   }
-} catch (error) {
-  console.log(error);
-  return res.json(error);
-}
 })
 
 router.put("/" , async(req, res) => {
@@ -96,15 +94,14 @@ router.put("/" , async(req, res) => {
   Provincia.id = req.body.id;
   try {
     const Prov=await ProvService.getProvinciaById(Provincia.id)
-    console.log(Prov);
 
     if(Prov!=null){
       if(Provincia.name!=null && Provincia.full_name!=null && Provincia.latitude!=null && Provincia.longitude!=null && Provincia.display_order!=null){
 
         if(!(Number.isNaN(Provincia.latitude)) && !(Number.isNaN(Provincia.longitude) && Provincia.name.length>3)){
     
-          const respuesta = await ProvService.patchProvincia(Provincia);
-          return res.status(201).json(respuesta);
+          await ProvService.patchProvincia(Provincia);
+          return res.status(201).json("Provincia modificada");
     
         }else{
           return res.status(400).send("Algun dato esta mal");
@@ -112,6 +109,9 @@ router.put("/" , async(req, res) => {
       }else{
         return res.status(400).send("Faltan datos");
       }
+    }else{
+      return res.status(404).send("No existe una provincia con esa id");
+
     }
   } catch (error) {
     console.log(error);
@@ -119,9 +119,18 @@ router.put("/" , async(req, res) => {
   }
 });
 
-router.delete("/", AuthMiddleware , async (req, res) => {
+router.delete("/" , async (req, res) => {
   const id = req.query.id;
   try {
+    const Prov=await ProvService.getProvinciaById(Provincia.id)
+
+    if(Prov!=null){
+      await ProvService.DeleteProvincia(id);
+      return res.status(200).send("Provincia eliminada");
+    }else{
+      return res.status(404).send("No existe una provincia con esa id");
+    }
+
     const respuesta = await ProvService.DeleteProvincia(id);
     return res.json(respuesta);
   } catch (error) {
