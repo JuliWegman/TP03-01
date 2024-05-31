@@ -12,13 +12,13 @@ export class EventoService {
     const parsedLimit = PaginacionConfig.parseLimit(pageSize) 
     const parsedOffset = PaginacionConfig.parseOffset(reqPage)
 
-    const cantidad = await repo.cantEventos();
-    const nextPage=((parsedOffset+1) * parsedLimit<=cantidad) ?`${process.env.BASE_URL}/${path}?limit=${parsedLimit}&offset=${parsedOffset+1}${(Evento.name) ?`&name=${Evento.name}`:null}${(Evento.category) ?`&id_event_category=${Evento.category}` : null}${(eventDate) ?`&eventDate=${eventDate}`:null}${(eventTag) ?`&eventTag=${eventTag}`:null}`:null
-    const pagina = PaginacionConfig.buildPaginationDto(PaginacionConfig.parseLimit(pageSize), PaginacionConfig.parseOffset(reqPage), cantidad, nextPage)
-    const eventosPorFiltro = await repo.getEventByFilter(Evento, pageSize, reqPage)
-
-
-    return eventosPorFiltro;
+    const cantidad =  Number.parseInt(await repo.cantEventos());
+    const nextPage=((parsedOffset+1) * parsedLimit<=cantidad) ?`/${"event"}?limit=${parsedLimit}&offset=${parsedOffset+1}${(Evento.name) ?`&name=${Evento.name}`:''}${(Evento.category) ?`&category=${Evento.category}` : ''}${(Evento.startDate) ?`&startDate=${Evento.startDate}`:''}${(Evento.tag) ?`&tag=${Evento.tag}`:''}`:"null"
+    const paginacion = PaginacionConfig.buildPaginationDto(parsedLimit, parsedOffset, cantidad, nextPage)
+    const eventosPorFiltro = await repo.getEventByFilter(Evento, parsedLimit, parsedOffset)
+    
+    const collection = {eventosPorFiltro, paginacion}
+    return collection;
   }
 
   async getEventById(id) {
