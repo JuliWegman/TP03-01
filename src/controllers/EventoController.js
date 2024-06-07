@@ -11,7 +11,6 @@ router.get("/" , async (req, res) => {
   const Evento = {};
   const pageSize = req.query.pageSize; // cant de eventos
   const page = req.query.offset; // numero de pagina
-  const URL=req.originalUrl; // url de la siguiente página
   Evento.name = req.query.name;
   Evento.category = req.query.category;
   Evento.startDate = req.query.startDate;
@@ -149,7 +148,7 @@ router.post("/:id/enrollment", AuthMiddleware , async (req, res) => {
   }
 });
 
-router.patch("/:id/enrollment",AuthMiddleware,async (req, res) => {
+router.put("/:id/enrollment",AuthMiddleware,async (req, res) => {
   const idEvento = req.params.id;
   const rating = req.query.rating;
   try {

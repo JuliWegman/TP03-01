@@ -3,7 +3,6 @@ import "dotenv/config"
 
 export default async function (token){
 
-const secretKey = "AguanteBoca123:)";
 var payloadOriginal = null;
 
 try {
