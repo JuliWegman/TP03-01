@@ -2,7 +2,7 @@
 
 - Crear funcion EsFecha en Evento Controller
 
-- Paginacion 
+- Paginacion HECHO
 
 - Register HECHO
 
@@ -16,9 +16,9 @@
     -provinces
 
 - Puntos:
-    -11 
-    -12 HECHO
-    -13
+    -11 HECHO Y PAGINADO
+    -12 HECHO Y PAGINADO
+    -13 HECHO Y PAGINADO
 
 - Provincia service HECHO
 

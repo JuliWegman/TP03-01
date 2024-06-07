@@ -7,10 +7,10 @@ const CategoriaService = new CategoryService();
 const router = express.Router();
 
 router.get("/", async (req, res) => {
-    const pageSize = req.query.pageSize;
-    const reqPage = req.query.reqPage;
+    const limit = req.query.limit;
+    const offset = req.query.offset;
     try {
-      const categorias = await CategoriaService.getCategorias();
+      const categorias = await CategoriaService.getCategorias(limit,offset);
       return res.status(200).json(categorias);
     } catch (error) {
       console.log(error);

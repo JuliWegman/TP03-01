@@ -9,13 +9,22 @@ export default class LocalidadRepository {
     this.BDclient = new Client(BDconfig);
     this.BDclient.connect();
   }
+    async cantLocalidades(){
+      try {
+        var sql = "SELECT COUNT(*) FROM locations"
+        const result = await this.BDclient.query(sql)
+        return result.rows[0].count
+      } catch (error) {
+        return error;
+      }
+    }
 
-
-    async getLocalidades(){
+    async getLocalidades(limit,offset){
         let returnEnity=null;
         try{
-        const sql="select * from locations";
-        const result=await this.BDclient.query(sql);
+        const sql="select * from locations order by id limit $1 offset $2";
+        const values=[limit,offset]
+        const result=await this.BDclient.query(sql,values);
         
         if(result.rows.length>0){
             returnEnity=result.rows;

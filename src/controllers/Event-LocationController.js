@@ -8,11 +8,11 @@ const evLocService=new EventLocationService();
 const locService= new LocalidadService()
 
 router.get("/", AuthMiddleware , async (req, res) => {
-  const pageSize = req.query.pageSize;
-  const page = req.query.offset;
+  const limit = req.query.limit;
+  const offset = req.query.offset;
   
     try {
-      const evLocByUser = await evLocService.getEventLocationsByUser(req.user.id,pageSize,page);
+      const evLocByUser = await evLocService.getEventLocationsByUser(req.user.id,limit,offset);
       if (evLocByUser!=null) {
         return res.status(200).json(evLocByUser);
       }else{
@@ -50,7 +50,6 @@ router.post("/",AuthMiddleware, async (req,res)=>{
   EventLocation.longitude=req.body.longitude;
   EventLocation.id_creator_user=req.user.id;
 
-  console.log(EventLocation.name.length);
   try {
       if((EventLocation.name!=null && EventLocation.full_address!=null) && (EventLocation.name.length>3 && EventLocation.full_address.length>3)){
 

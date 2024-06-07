@@ -9,11 +9,11 @@ export default class LocalidadRepository {
       this.BDclient.connect();
     }
 
-    async getEventLocationsByUser(id){
+    async getEventLocationsByUser(id,limit,offset){
         let returnEntity = null;
         try {
-      var sql = `SELECT * FROM event_locations WHERE id_creator_user=$1`;
-      const values = [id];
+      var sql = `SELECT * FROM event_locations WHERE id_creator_user=$1 order by id asc limit $2 offset $3 `;
+      const values = [id,limit,offset];
       const result = await this.BDclient.query(sql, values);
 
       if (result.rows.length > 0) {
@@ -24,6 +24,22 @@ export default class LocalidadRepository {
         }
         return returnEntity;
     }
+
+    async getEventLocationsByLocation(id,limit,offset){
+      let returnEntity = null;
+      try {
+    var sql = `SELECT * FROM event_locations WHERE id_location=$1 order by id asc limit $2 offset $3 `;
+    const values = [id,limit,offset];
+    const result = await this.BDclient.query(sql, values);
+    if (result.rows.length > 0) {
+      returnEntity = result.rows;
+    }
+      } catch (error) {
+    console.log(error);
+      }
+      return returnEntity;
+  }
+
 
     async getEventLocationById(id){
         let returnEntity = null;
@@ -121,11 +137,23 @@ export default class LocalidadRepository {
       try {
         var sql = "SELECT COUNT(*) FROM event_locations WHERE id_creator_user=$1"
         const values=[id]
-        const result = await this.BDclient.query(sql)
-        console.log(result.rows);
+        const result = await this.BDclient.query(sql,values)
         return result.rows[0].count
       } catch (error) {
         return error;
       }
     }
+
+    async cantEvLocByLocation(id){
+      try {
+        var sql = "SELECT COUNT(*) FROM event_locations WHERE id_location=$1"
+        const values=[id]
+        const result = await this.BDclient.query(sql,values)
+        return result.rows[0].count
+      } catch (error) {
+        return error;
+      }
+    }
+
+
 }

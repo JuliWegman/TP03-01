@@ -9,18 +9,25 @@ export default class CategoriaRepository {
     this.BDclient = new Client(BDconfig);
     this.BDclient.connect();
   }
+  async cantCategorias(){
+    try {
+        var sql = "SELECT COUNT(*) FROM event_categories"
+        const result = await this.BDclient.query(sql)
+        return result.rows[0].count
+      } catch (error) {
+        return error;
+      }
+  }
 
-
-  async getCategorias(){
+  async getCategorias(limit, offset){
     let returnEnity=null;
     try{
-        const sql="select * from event_categories";
-        const result=await this.BDclient.query(sql);
+        const sql="select * from event_categories order by id limit $1 offset $2";
+        const values=[limit, offset]
+        const result=await this.BDclient.query(sql,values);
         
         returnEnity=result.rows;
         
-
-
     }catch(error){
         console.log(error)
 

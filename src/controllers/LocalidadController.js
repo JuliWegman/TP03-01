@@ -7,10 +7,10 @@ const LocalService = new LocalidadService();
 const router = express.Router();
 
 router.get("/", async (req, res) => {
-    const pageSize = req.query.pageSize;
-    const reqPage = req.query.reqPage;
+    const limit = req.query.limit;
+    const offset = req.query.offset;
     try {
-      const Localidades = await LocalService.getLocalidades(pageSize, reqPage);
+      const Localidades = await LocalService.getLocalidades(limit, offset);
       return res.status(200).json(Localidades);
     } catch (error) {
       console.log(error);
@@ -35,6 +35,25 @@ router.get("/:id", async (req, res) => {
       return res.json(error);
   }
 });
+
+router.get("/:id/event-location", AuthMiddleware ,async (req,res)=>{
+  const id=req.params.id;
+  const limit = req.query.limit;
+  const offset = req.query.offset;
+  try {
+    if (await LocalService.getLocalidadById(id)!=null) {
+      const collection = await LocalService.getEvLocByLocalidad(id,limit, offset);
+      return res.status(200).json(collection);
+    }else{
+      return res.status(404).send("NOT FOUND")
+    }
+    
+  } catch (error) {
+    console.log(error);
+    return res.json(error);
+  }
+
+}); 
     
 
 export default router;

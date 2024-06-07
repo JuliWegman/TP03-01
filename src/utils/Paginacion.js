@@ -18,7 +18,7 @@ export class Pagination {
   }
 
   parseOffset(offset) {
-    return !isNaN(parseInt(offset)) ? parseInt(offset) : 0;
+    return !isNaN(parseInt(offset)) ? parseInt(offset) : 1;
   }
 
   buildPaginationDto(limit, currentOffset, total, path) {
@@ -38,7 +38,6 @@ export class Pagination {
 
   buildNextPage(path, limit, currentOffset) {
     let url = BASE_URL + path;
-
     if (this.limitRegex.test(url)) {
       url = url.replace(this.limitRegex, `limit=${limit}`);
     } else {

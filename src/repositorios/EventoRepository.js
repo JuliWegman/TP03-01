@@ -29,7 +29,7 @@ export default class EventoRepository {
       var sql = `SELECT e.name, e.description, ec.name as Category, el.name as Location, e.start_date, e.duration_in_minutes, e.price, e.enabled_for_enrollment, e.max_assistance FROM events e inner join event_categories ec on e.id_event_category=ec.id inner join event_tags et on e.id=et.id_event inner join tags t on et.id_tag=t.id inner join locations el on e.id_event_location = el.id inner join users u on e.id_creator_user = u.id where `;
       const values = [
         pageSize,
-        reqPage+1,
+        reqPage,
       ];
       var index = 3;
 
