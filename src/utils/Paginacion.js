@@ -18,7 +18,7 @@ export class Pagination {
   }
 
   parseOffset(offset) {
-    return !isNaN(parseInt(offset)) ? parseInt(offset) : 1;
+    return !isNaN(parseInt(offset)) ? parseInt(offset) : 0;
   }
 
   buildPaginationDto(limit, currentOffset, total, path) {

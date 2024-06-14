@@ -9,6 +9,16 @@ export default class ProvinciaRepository{
         this.BDclient.connect();
     }
 
+    async cantProvincias(){
+      try {
+        var sql = "SELECT COUNT(*) FROM provinces"
+        const result = await this.BDclient.query(sql)
+        return result.rows[0].count
+      } catch (error) {
+        return error;
+      }
+    }
+
     async getProvinciaById(id){
         let returnEnity=null;
         try{
@@ -29,11 +39,12 @@ export default class ProvinciaRepository{
         return returnEnity;
     }
 
-    async getProvincias(){
+    async getProvincias(limit, offset){
         let returnEnity=null;
         try{
-            const sql="select * from provinces";
-            const result=await this.BDclient.query(sql);
+            const sql="select * from provinces limit $1 offset $2";
+            const values = [limit, offset]
+            const result=await this.BDclient.query(sql, values);
             
             if(result.rows.length>0){
                 returnEnity=result.rows;
@@ -91,7 +102,6 @@ export default class ProvinciaRepository{
               }
         
               sql += ` where id=$1`;
-              console.log(sql);
         
               const result = await this.BDclient.query(sql, values);
               returnEntity=result.rowsAffected;

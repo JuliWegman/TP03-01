@@ -6,14 +6,16 @@
 
 - Register HECHO
 
+- PONER IF EN INSERT EVENT
+
 - Token y login HECHO 
 
 - Archivo .env HECHO
 
 - Agregar querys :
     -events HECHO
-    -users 
-    -provinces
+    -users HECHO
+    -provinces HECHO
 
 - Puntos:
     -11 HECHO Y PAGINADO

@@ -5,7 +5,6 @@ import routerProvincia from "./src/controllers/ProvinciaController.js";
 import routerLocalidad from './src/controllers/LocalidadController.js'
 import routerCategoria from './src/controllers/CategoryController.js'
 import routerEventLocation from './src/controllers/Event-LocationController.js'
-import { BDconfig } from "./src/configs/BD.js";
 import "dotenv/config"
 
 const app = express();

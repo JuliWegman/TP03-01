@@ -113,7 +113,6 @@ export default class LocalidadRepository {
 
         sql += " where id=$1"
 
-        console.log(sql);
 
         await this.BDclient.query(sql,values);
         

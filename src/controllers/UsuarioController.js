@@ -37,10 +37,6 @@ router.post("/register", async (req, res) => {
   user.password = req.body.password;
 
   const mailish = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-
-    console.log(user);
-
   try {
     if (user.first_name!=null && user.last_name!=null && user.password!=null && user.username!=null) {
 

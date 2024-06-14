@@ -1,18 +1,24 @@
 import { query } from "express";
 import repositorio from "../repositorios/ProvinciaRepository.js"
 import repositorioLocalidades from "../repositorios/LocalidadRepository.js"
+import { Pagination, PaginationDto } from "../utils/Paginacion.js";
+
 
 const repo=new repositorio();
 const repoLocalidades=new repositorioLocalidades();
+const PaginacionConfig = new Pagination();
 
 export class ProvinciaService {
   async getProvincias(pageSize, reqPage) {
-    
-    return await repo.getProvincias();  
+    const parsedLimit = PaginacionConfig.parseLimit(pageSize) 
+    const parsedOffset = PaginacionConfig.parseOffset(reqPage)
+    const cantidad =  Number.parseInt(await repo.cantProvincias());
+    const nextPage=((parsedOffset+1) * parsedLimit<=cantidad) ?`/provincia?limit=${parsedLimit}&offset=${parsedOffset+1}`:"null";
+    const paginacion = PaginacionConfig.buildPaginationDto(parsedLimit, parsedOffset, cantidad, nextPage)
+    return [await repo.getProvincias(parsedLimit, parsedOffset), paginacion];  
   }
 
   async getProvinciaById(id){
-    console.log(id);
 
     return await repo.getProvinciaById(id);
   }

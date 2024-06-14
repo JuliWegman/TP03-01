@@ -7,23 +7,28 @@ const router = express.Router();
 const EventService = new EventoService();
 
 
+const esFecha = (fecha) => {
+  const patron = /^\d{4}-\d{2}-\d{2}$/;
+  const numeros = /^\d+$/;
+  
+  return patron.test(fecha) && numeros.test(fecha.replace(/-/g, ''));
+
+}
+
 router.get("/" , async (req, res) => {
   const Evento = {};
-  const pageSize = req.query.pageSize; // cant de eventos
-  const page = req.query.offset; // numero de pagina
+  const limit = req.query.limit; // cant de eventos
+  const offset = req.query.offset; // numero de pagina
   Evento.name = req.query.name;
   Evento.category = req.query.category;
   Evento.startDate = req.query.startDate;
   Evento.tag = req.query.tag;
   
-  req.user;
-
   try {
-    const allEvents = await EventService.getEventByFilter(Evento, pageSize, page);
-    return res.json(allEvents);
-    if (esFecha(Evento.startDate)) {
-      const allEvents = EventService.getEventByFilter(Evento, pageSize, page);
-      return res.json(allEvents);
+    if (esFecha(Evento.startDate) || Evento.startDate == undefined) {
+      const allEvents = await EventService.getEventByFilter(Evento, limit, offset);
+      console.log(allEvents);
+      return res.send(allEvents);
     } else {
       return res.json("error en los filtros ingresados");
     }
@@ -33,10 +38,10 @@ router.get("/" , async (req, res) => {
   }
 });
 
-router.delete("/", AuthMiddleware , (req, res) => {
+router.delete("/", AuthMiddleware , async (req, res) => {
   const id = req.query.id;
   try {
-    EventService.DeleteEvent(id);
+    await EventService.DeleteEvent(id);
     return res.send("Borradisimo");4
   } catch (error) {
     console.log(error);
@@ -77,7 +82,6 @@ router.put("/",AuthMiddleware, async (req, res) => {
   Evento.enabled_for_enrollment = req.query.enabled_for_enrollment;
   Evento.max__assistance = req.query.max__assistance;
   Evento.id = req.query.id;
-  console.log(Evento.id);
   try {
     const respuesta = await EventService.patchEvento(Evento);
     return res.json(respuesta);
@@ -89,7 +93,6 @@ router.put("/",AuthMiddleware, async (req, res) => {
 
 router.get("/:id", async (req, res) => {
   const id = req.params.id;
-  console.log(id);
   try {
     const EventById = await EventService.getEventById(id);
     if (EventById!=null) {
@@ -153,7 +156,6 @@ router.put("/:id/enrollment",AuthMiddleware,async (req, res) => {
   const rating = req.query.rating;
   try {
     const mensaje = await EventService.CambiarRating(idEvento, rating);
-    console.log(mensaje);
     return res.status(200).send(mensaje);
   } catch (error) {
     console.log(error);
