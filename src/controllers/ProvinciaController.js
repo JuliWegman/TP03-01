@@ -11,10 +11,10 @@ const ProvService = new ProvinciaService();
 
 
 router.get("/", async (req, res) => {
-  const pageSize = req.query.pageSize;
-  const reqPage = req.query.reqPage;
+  const limit = req.query.limit;
+  const offset = req.query.offset;
   try {
-    const provincias = await ProvService.getProvincias(pageSize, reqPage);
+    const provincias = await ProvService.getProvincias(limit, offset);
     return res.status(200).json(provincias);
   } catch (error) {
     console.log(error);
@@ -39,15 +39,15 @@ router.get("/:id", async (req, res) => {
 });
 
 router.get("/:id/locations", async (req, res) => {
-  const pageSize = req.query.pageSize;
-  const reqPage = req.query.reqPage;
+  const limit = req.query.limit;
+  const offset = req.query.offset;
   const id=req.params.id
   try {
-    const localidades = await ProvService.getLocalidadesByProvincia(id);
-    if (provincia!=null) {
+    const collection = await ProvService.getLocalidadesByProvincia(id,limit,offset);
+    if (collection.localidades!=null) {
       return res.status(200).json(localidades);
     }else{
-      return res.status(401).json("No existe la id");
+      return res.status(404).json("No existe la id");
 
     }
   } catch (error) {
@@ -64,10 +64,11 @@ router.post("/",async (req, res) =>{
   Provincia.longitude=req.body.longitude
   Provincia.display_order=req.body.display_order
 
+  console.log(Provincia.name.length);
   try {
     if(Provincia.name!=null && Provincia.full_name!=null && Provincia.latitude!=null && Provincia.longitude!=null && Provincia.display_order!=null){
 
-      if(!(Number.isNaN(Provincia.latitude)) && !(Number.isNaN(Provincia.longitude) && Provincia.name.length>3)){
+      if(!(Number.isNaN(Provincia.latitude)) && !(Number.isNaN(Provincia.longitude)) && Provincia.name.length>3){
 
         const respuesta = await ProvService.InsertProvincia(Provincia);
         return res.status(201).json(respuesta);
@@ -119,20 +120,23 @@ router.put("/" , async(req, res) => {
   }
 });
 
-router.delete("/" , async (req, res) => {
-  const id = req.query.id;
+router.delete("/:id" , async (req, res) => {
+  const id = req.params.id;
   try {
-    const Prov=await ProvService.getProvinciaById(Provincia.id)
-
+    const Prov=await ProvService.getProvinciaById(id)
+    console.log(Prov);
     if(Prov!=null){
-      await ProvService.DeleteProvincia(id);
-      return res.status(200).send("Provincia eliminada");
+      try{
+        await ProvService.DeleteProvincia(id);
+        return res.status(200).send("Provincia eliminada");
+
+      }catch(error){
+        console.log(error);
+        return res.json(error);
+      }
     }else{
       return res.status(404).send("No existe una provincia con esa id");
     }
-
-    const respuesta = await ProvService.DeleteProvincia(id);
-    return res.json(respuesta);
   } catch (error) {
     console.log(error);
     return res.json(error);

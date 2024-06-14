@@ -8,11 +8,11 @@ const PaginacionConfig = new Pagination();
   
 
 export class EventoService {
-  async getEventByFilter(Evento, pageSize, reqPage) {
-    const parsedLimit = PaginacionConfig.parseLimit(pageSize) 
-    const parsedOffset = PaginacionConfig.parseOffset(reqPage)
+  async getEventByFilter(Evento, limit, of) {
+    const parsedLimit = PaginacionConfig.parseLimit(limit) 
+    const parsedOffset = PaginacionConfig.parseOffset(of)
     const cantidad =  Number.parseInt(await repo.cantEventos());
-    const nextPage=((parsedOffset+1) * parsedLimit<=cantidad) ?`/event?limit=${parsedLimit}&offset=${parsedOffset+1}${(Evento.name) ?`&name=${Evento.name}`:''}${(Evento.category) ?`&category=${Evento.category}` : ''}${(Evento.startDate) ?`&startDate=${Evento.startDate}`:''}${(Evento.tag) ?`&tag=${Evento.tag}`:''}`:"null"
+    const nextPage=((parsedOffset+1) * parsedLimit<=cantidad) ?`/event?${(Evento.name) ?`&name=${Evento.name}`:''}${(Evento.category) ?`&category=${Evento.category}` : ''}${(Evento.startDate) ?`&startDate=${Evento.startDate}`:''}${(Evento.tag) ?`&tag=${Evento.tag}`:''}`:"null"
     const paginacion = PaginacionConfig.buildPaginationDto(parsedLimit, parsedOffset, cantidad, nextPage)
     const eventosPorFiltro = await repo.getEventByFilter(Evento, parsedLimit, parsedOffset)
     if (eventosPorFiltro!=null) {
@@ -58,8 +58,9 @@ export class EventoService {
   }
 
   async InsertEvento(evento) {
-
-    await repo.InsertEvento(evento);
-    return "insertado con exito";
+    if (await repo.InsertEvento(evento)) {
+      
+      return "insertado con exito";
+    } else return "ERROR"
   }
 }

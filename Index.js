@@ -12,7 +12,7 @@ app.use(express.json());
 
 app.use("/event", routerEvento);
 app.use("/user", routerUsuario);
-app.use("/provincia", routerProvincia);
+app.use("/province", routerProvincia);
 app.use("/localidad", routerLocalidad);
 app.use("/categoria", routerCategoria);
 app.use("/event-location",routerEventLocation);

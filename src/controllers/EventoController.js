@@ -38,8 +38,8 @@ router.get("/" , async (req, res) => {
   }
 });
 
-router.delete("/", AuthMiddleware , async (req, res) => {
-  const id = req.query.id;
+router.delete("/:id", AuthMiddleware , async (req, res) => {
+  const id = req.params.id;
   try {
     await EventService.DeleteEvent(id);
     return res.send("Borradisimo");4

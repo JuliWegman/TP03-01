@@ -28,7 +28,7 @@ export class Pagination {
     response.total = total;
     if (limit !== -1) {
       response.nextPage =
-        limit + currentOffset < total
+        limit + currentOffset*limit < total
           ? this.buildNextPage(path, limit, currentOffset)
           : null;
     }
@@ -45,10 +45,10 @@ export class Pagination {
     }
 
     if (this.offsetRegex.test(url)) {
-      url = url.replace(this.offsetRegex, `offset=${currentOffset + limit}`);
+      url = url.replace(this.offsetRegex, `offset=${currentOffset + 1}`);
     } else {
       url = `${url}${url.includes("?") ? "&" : "?"}offset=${
-        currentOffset + limit
+        currentOffset + 1
       }`;
     }
 

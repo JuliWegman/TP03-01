@@ -43,7 +43,7 @@ export default class ProvinciaRepository{
         let returnEnity=null;
         try{
             const sql="select * from provinces limit $1 offset $2";
-            const values = [limit, offset]
+            const values = [limit, (offset*limit)]
             const result=await this.BDclient.query(sql, values);
             
             if(result.rows.length>0){
@@ -117,10 +117,11 @@ export default class ProvinciaRepository{
     async deleteProvincia(id){
         var returnEntity = null;
         try {
-          const sql = `Delete from provinces Where id=1`;
+          const sql = `Delete from provinces Where id=$1`;
           const values = [id];
           const result = await this.BDclient.query(sql, values);
-    
+          console.log("AAAAAAAAAAAAAAAAAAAAAAAAA");
+
           if (result.rowsAffected.length > 0) {
             returnEntity = result.rowsAffected[0];
           }
@@ -136,10 +137,11 @@ export default class ProvinciaRepository{
       const sql = `Insert into provinces(name,full_name,latitude,longitude,display_order) values ($1,$2,$3,$4,$5)`;
       const values = [ Provincia.name , Provincia.full_name , Provincia.latitude , Provincia.longitude , Provincia.display_order ];
       returnEntity=await this.BDclient.query(sql, values);
-        
+      return "Provincia insertada";
       }catch (error) {
       console.log(error);
+      return "Error"
       }
-      return returnEntity;
+      
     }
 }

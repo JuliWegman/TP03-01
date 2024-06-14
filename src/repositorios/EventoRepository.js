@@ -26,7 +26,7 @@ export default class EventoRepository {
       var sql = `SELECT e.name, e.description, ec.name as Category, el.name as Location, e.start_date, e.duration_in_minutes, e.price, e.enabled_for_enrollment, e.max_assistance FROM events e LEFT join event_categories ec on e.id_event_category=ec.id LEFT join event_tags et on e.id=et.id_event LEFT join tags t on et.id_tag=t.id LEFT join locations el on e.id_event_location = el.id LEFT join users u on e.id_creator_user = u.id where `;
       const values = [
         pageSize,
-        reqPage,
+        (reqPage*pageSize),
       ];
       var index = 3;
 
@@ -246,9 +246,10 @@ export default class EventoRepository {
       const sql = `update event_enrollments SET rating=$1 WHERE id=$2`;
       const values = [rating,id];
       await this.BDclient.query(sql, values);
-
+      return true;
     } catch (error) {
       console.log(error);
+      return false;
     }
   } 
 
@@ -257,9 +258,11 @@ export default class EventoRepository {
       const sql = `Insert into events(name,description,id_event_category,id_event_location,start_date,duration_in_minutes,price,enabled_for_enrollment,max_assistance, id_creator_user) values ($1,$9,$2,$3,$4,$5,$6,$7,$8, $10)`;
       const values = [evento.name ,evento.id_event_category, evento.id_event_location, evento.start_date, evento.duration_in_minutes, evento.price, evento.enabled_for_enrollment, evento.max_assistance, evento.description, evento.id_creator_user];
       await this.BDclient.query(sql, values);
+      return true;
 
     } catch (error) {
       console.log(error);
+      return false;
     }
   }  
 }

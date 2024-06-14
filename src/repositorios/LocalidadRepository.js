@@ -54,11 +54,11 @@ export default class LocalidadRepository {
         return returnEntity;
     }
 
-    async getLocalidadesByProvincia(id_provincia){
+    async getLocalidadesByProvincia(id_provincia,limit,offset){
         let returnEnity=null;
         try{
-            const sql="select * from locations where id_province=$1";
-            const values=[id_provincia];
+            const sql="select * from locations where id_province=$1 limit $2 offset $3";
+            const values=[id_provincia,limit,(offset*limit)];
             const result=await this.BDclient.query(sql,values);
             
             if(result.rows.length>0){
