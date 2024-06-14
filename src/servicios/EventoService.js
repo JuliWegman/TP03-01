@@ -41,9 +41,7 @@ export class EventoService {
   }
 
   async DeleteEvent(id) {
-
-   await repo.DeleteEvent(id);
-    return "Eliminado con éxito";
+    return await repo.DeleteEvent(id);
   }
 
   async InscripcionEvento(enrollment) {
@@ -62,5 +60,9 @@ export class EventoService {
       
       return "insertado con exito";
     } else return "ERROR"
+  }
+
+  async getTags(id){
+    return repo.getTagsByEvent(id);
   }
 }

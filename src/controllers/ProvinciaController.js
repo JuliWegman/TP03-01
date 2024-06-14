@@ -124,11 +124,14 @@ router.delete("/:id" , async (req, res) => {
   const id = req.params.id;
   try {
     const Prov=await ProvService.getProvinciaById(id)
-    console.log(Prov);
     if(Prov!=null){
       try{
-        await ProvService.DeleteProvincia(id);
-        return res.status(200).send("Provincia eliminada");
+        const eliminado=await ProvService.DeleteProvincia(id);
+        if (eliminado) {        
+          return res.status(200).send(Prov);
+        }else{
+          return res.status(403).send("No se puede eliminar porque tiene localidades")
+        }
 
       }catch(error){
         console.log(error);

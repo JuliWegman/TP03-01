@@ -217,8 +217,8 @@ export default class EventoRepository {
     try {
       const sql = `Delete from events Where id=$1`;
       const values = [id];
-      await this.BDclient.query(sql, values);
-
+      const result=await this.BDclient.query(sql, values);
+      return result.rowsAffected[0]
     } catch (error) {
       console.log(error);
     }
@@ -255,8 +255,8 @@ export default class EventoRepository {
 
   async InsertEvento(evento) {
     try {
-      const sql = `Insert into events(name,description,id_event_category,id_event_location,start_date,duration_in_minutes,price,enabled_for_enrollment,max_assistance, id_creator_user) values ($1,$9,$2,$3,$4,$5,$6,$7,$8, $10)`;
-      const values = [evento.name ,evento.id_event_category, evento.id_event_location, evento.start_date, evento.duration_in_minutes, evento.price, evento.enabled_for_enrollment, evento.max_assistance, evento.description, evento.id_creator_user];
+      const sql = `Insert into events(name,description,id_event_category,id_event_location,start_date,duration_in_minutes,price,enabled_for_enrollment,max_assistance, id_creator_user) values ($1,$2,$3,$4,$5,$6,$7,$8,$9, $10)`;
+      const values = [evento.name,evento.description ,evento.id_event_category, evento.id_event_location, evento.start_date, evento.duration_in_minutes, evento.price, evento.enabled_for_enrollment, evento.max_assistance,  evento.id_creator_user];
       await this.BDclient.query(sql, values);
       return true;
 
@@ -265,6 +265,24 @@ export default class EventoRepository {
       return false;
     }
   }  
+  async getTagsByEvent(id){
+    var returnEntity=null
+    try{
+    const sql="SELECT * FROM event_tags WHERE id_event=$1"
+    const values=[id]
+    const result= await this.BDclient.query(sql,values)
+    if (result.rows.length>0) {
+      returnEntity=result.rows;
+      
+    }
+    }catch(error){
+      console.log(error);
+    }
+    return returnEntity;
+    
+  }
 }
+
+  
 
 // export default EventoRepository;

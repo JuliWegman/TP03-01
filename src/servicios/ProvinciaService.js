@@ -34,7 +34,13 @@ export class ProvinciaService {
   }
 
   async DeleteProvincia(id) {
-    return await repo.deleteProvincia(id);
+    const localidades=((await this.getLocalidadesByProvincia(id,1,0)).localidades)
+    if (localidades==null) {
+       await repo.deleteProvincia(id);
+       return true
+    }else{
+      return false
+    }
   }
 
   async getLocalidadesByProvincia(id_provincia,limit,offset){

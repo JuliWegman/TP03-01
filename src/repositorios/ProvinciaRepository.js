@@ -120,12 +120,10 @@ export default class ProvinciaRepository{
           const sql = `Delete from provinces Where id=$1`;
           const values = [id];
           const result = await this.BDclient.query(sql, values);
-          console.log("AAAAAAAAAAAAAAAAAAAAAAAAA");
 
-          if (result.rowsAffected.length > 0) {
-            returnEntity = result.rowsAffected[0];
-          }
-        } catch (error) {
+          returnEntity = result.rowsAffected;
+
+        }catch (error) {
           console.log(error);
         }
         return returnEntity;
