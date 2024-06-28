@@ -1,6 +1,6 @@
 "# TP03-01" 
 
-- Crear funcion EsFecha en Evento Controller
+- Crear funcion EsFecha en Evento Controller HECHO
 
 - Paginacion HECHO
 

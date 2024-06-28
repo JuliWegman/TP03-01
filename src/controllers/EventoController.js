@@ -114,7 +114,7 @@ router.put("/",AuthMiddleware, async (req, res) => {
   Evento.id_event_location=req.body.id_event_location;
     
   try {
-    console.log(Evento);
+    console.log(Evento.id);
     const ev=await EventService.getEventById(Evento.id)
     const evLoc  =await evLocService.getEventLocationById(Evento.id_event_location)
     console.log(ev);
