@@ -34,7 +34,7 @@ export class ProvinciaService {
   }
 
   async DeleteProvincia(id) {
-    const localidades=((await this.getLocalidadesByProvincia(id,1,0)).localidades)
+    const localidades=((await this.getLocalidadesByProvincia(id,1,0)).Colection)
     if (localidades==null) {
        await repo.deleteProvincia(id);
        return true

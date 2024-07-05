@@ -129,7 +129,7 @@ router.delete("/:id", AuthMiddleware , async (req,res)=>{
   const evLocById = await evLocService.getEventLocationById(id);
   if (evLocById!=null && evLocById.id_creator_user==req.user.id) {
     await evLocService.deleteEvLoc(id);
-    return res.status(200).send("Eliminadísimo")
+    return res.status(200).send("Event location eliminado")
 
     
   }else{

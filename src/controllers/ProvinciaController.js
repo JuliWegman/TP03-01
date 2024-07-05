@@ -3,9 +3,6 @@ import {
   ProvinciaService
 } from "../servicios/ProvinciaService.js";
 
-import AuthMiddleware from "../auth/authMiddleware.js";
-
-
 const router = express.Router();
 const ProvService = new ProvinciaService();
 
@@ -29,7 +26,7 @@ router.get("/:id", async (req, res) => {
     if (provincia!=null) {
       return res.status(200).json(provincia);
     }else{
-      return res.status(404).json("No existe la id");
+      return res.status(404).json("No existe una provincia con esa id");
 
     }
   } catch (error) {
@@ -44,10 +41,10 @@ router.get("/:id/locations", async (req, res) => {
   const id=req.params.id
   try {
     const collection = await ProvService.getLocalidadesByProvincia(id,limit,offset);
-    if (collection.localidades!=null) {
-      return res.status(200).json(localidades);
+    if (collection.Colection!=null) {
+      return res.status(200).json(collection);
     }else{
-      return res.status(404).json("No existe la id");
+      return res.status(404).json("No se encontro informacion");
 
     }
   } catch (error) {
@@ -128,7 +125,7 @@ router.delete("/:id" , async (req, res) => {
       try{
         const eliminado=await ProvService.DeleteProvincia(id);
         if (eliminado) {        
-          return res.status(200).send(Prov);
+          return res.status(200).send("Provincia eliminada");
         }else{
           return res.status(403).send("No se puede eliminar porque tiene localidades")
         }

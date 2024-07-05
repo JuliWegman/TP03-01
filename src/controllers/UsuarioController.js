@@ -38,6 +38,18 @@ router.post("/register", async (req, res) => {
 
   const mailish = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   try {
+    const usernames=await UserService.getAllUsernames()
+    var yaExiste=false;
+    usernames.forEach(e => {
+      if (e.username==user.username) {
+        yaExiste=true;
+      }
+      
+    });
+    if (yaExiste) {
+      return res.status(400).json("Ese username Ya está en uso")
+
+    }
     if (user.first_name!=null && user.last_name!=null && user.password!=null && user.username!=null) {
 
       if(user.first_name.length>=3 && user.last_name.length>=3 && user.password.length>=3){

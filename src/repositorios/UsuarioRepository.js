@@ -54,6 +54,22 @@ export default class UsuarioRepository{
             console.log(error)
         }
     }
+
+    async getAllUsernames(){
+        const sql="SELECT username FROM users"
+        var returnEntity=null
+        try {
+            const result=await this.BDclient.query(sql)
+            if (result.rows.length>0) {
+                returnEntity=result.rows
+            }
+
+        } catch (error) {
+            console.log(error);
+        }
+        return returnEntity
+
+    }
     
 
 

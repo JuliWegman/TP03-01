@@ -68,4 +68,8 @@ export class UsuarioService {
   async getUserById(id){
     return await repo.getUserById(id);
   }
+
+  async getAllUsernames(){
+    return await repo.getAllUsernames()
+  }
 };
