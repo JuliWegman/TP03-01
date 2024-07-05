@@ -1,4 +1,3 @@
-import { query } from "express";
 import LocEvRepo from "../repositorios/Event-LocationRepository.js"
 import { Pagination, PaginationDto } from "../utils/Paginacion.js";
 
@@ -10,11 +9,11 @@ export class EventLocationService{
         const parsedLimit = PaginacionConfig.parseLimit(limit);
         const parsedOffset = PaginacionConfig.parseOffset(offset);
         const cantidad =  Number.parseInt(await repo.cantEvLoc(id));
-        const paginacion = PaginacionConfig.buildPaginationDto(parsedLimit, parsedOffset, cantidad, "/event-location")
-        const evLoc= await repo.getEventLocationsByUser(id,parsedLimit,parsedOffset);
+        const paginacion = PaginacionConfig.buildPaginationDto(parsedLimit, parsedOffset, cantidad, "/api/event-location")
+        const Colection= await repo.getEventLocationsByUser(id,parsedLimit,parsedOffset);
 
-        const collection={evLoc,paginacion}
-        return collection;
+        const xx={Colection,paginacion}
+        return xx;
 
     }
 

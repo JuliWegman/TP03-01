@@ -51,3 +51,16 @@ LOGIN USER
     "username":"polshu@polshu.com.ar",
     "password":"pablito"
 }
+
+
+Les falta la documentacion, no veo que tengan ninguna coleccion de Postman ni swagger instalado.
+Cuando pongo una cantidad de max assistance igual al capacity del event location obtengo "No pueden asistir más personas de las que admite la localidad"
+Cuando quiero editar un evento que si existe me tira error de que no existe el evento.
+Cuando quiero eliminar un evento que si existe, me tira error diciendo que el ID no existe.
+El event_enrollment no funciona, tiene como requeridos campos que no se piden nunca en la consigna.
+Para la paginacion, la coleccion se tiene que llamar "Colection" no cambiar el nombre por cada endpoint.
+El endpoint de event-category estaba nombrado como Categoria.
+Cuando quiero crear una categoria me tira error de que no existe el nombre. Esto tiene que salir del body, no de la query.
+Para editar hicieron un PATCH en lugar de un PUT
+Si quiero eliminar una categoria que no existe, me que lo hace bien en lugar de 404.
+El endpoint de locations le pusieron localidad.

@@ -1,8 +1,6 @@
 import pg from "pg";
 import { BDconfig } from "../configs/BD.js";
-import e from "express";
 
-// pasandolo al repository
 export default class EventoRepository {
   constructor() {
     const { Client } = pg;
@@ -20,10 +18,21 @@ export default class EventoRepository {
     }
   }
 
+  async countEnrollments(id) {
+    try {
+      var sql = "SELECT COUNT(*) FROM event_enrollments WHERE id_event=$1"
+      const values=[id]
+      const result = await this.BDclient.query(sql,values)
+      return result.rows[0].count
+    } catch (error) {
+      return error;
+    }
+  }
+
   async getEventByFilter(Evento, pageSize, reqPage) {
     var returnEntity = null;
     try {
-      var sql = `SELECT e.name, e.description, ec.name as Category, el.name as Location, e.start_date, e.duration_in_minutes, e.price, e.enabled_for_enrollment, e.max_assistance FROM events e LEFT join event_categories ec on e.id_event_category=ec.id LEFT join event_tags et on e.id=et.id_event LEFT join tags t on et.id_tag=t.id LEFT join locations el on e.id_event_location = el.id LEFT join users u on e.id_creator_user = u.id where `;
+      var sql = `SELECT  e.id_creator_user,e.id_event_category,e.id_event_location,e.name, e.description, ec.name as Category, el.name as Location, e.start_date, e.duration_in_minutes, e.price, e.enabled_for_enrollment, e.max_assistance FROM events e LEFT join event_categories ec on e.id_event_category=ec.id LEFT join event_tags et on e.id=et.id_event LEFT join tags t on et.id_tag=t.id LEFT join locations el on e.id_event_location = el.id LEFT join users u on e.id_creator_user = u.id where `;
       const values = [
         pageSize,
         (reqPage*pageSize),
@@ -59,7 +68,7 @@ export default class EventoRepository {
         sql = sql.slice(0, -7);
       }
       
-      sql += " group by e.id, e.description, e.name,ec.name,el.name,e.start_date, e.duration_in_minutes, e.price, e.enabled_for_enrollment, e.max_assistance order by e.id asc limit $1 offset $2 ";
+      sql += " group by e.id, e.description, e.name,ec.name,el.id,e.start_date, e.duration_in_minutes, e.price, e.enabled_for_enrollment, e.max_assistance order by e.id asc limit $1 offset $2 ";
 
       const result = await this.BDclient.query(sql, values);
 
@@ -75,7 +84,7 @@ export default class EventoRepository {
   async getEventById(id) {
     let returnEntity = null;
     try {
-      var sql = `SELECT e.name, e.description, ec.name as Category, el.name as Location, e.start_date, e.duration_in_minutes, e.price, e.enabled_for_enrollment, e.max_assistance FROM events e inner join event_categories ec on e.id_event_category=ec.id inner join event_tags et on e.id=et.id_event inner join tags t on et.id_tag=t.id inner join locations el on e.id_event_location = el.id inner join users u on e.id_creator_user = u.id where e.id=$1`;
+      var sql = `SELECT e.id_creator_user,e.id_event_category,e.id_event_location,e.name, e.description, ec.name as Category, el.name as Location, e.start_date, e.duration_in_minutes, e.price, e.enabled_for_enrollment, e.max_assistance FROM events e left join event_categories ec on e.id_event_category=ec.id left join event_tags et on e.id=et.id_event left join tags t on et.id_tag=t.id inner join locations el on e.id_event_location = el.id left join users u on e.id_creator_user = u.id where e.id=$1`;
       const values = [id];
       const result = await this.BDclient.query(sql, values);
 
@@ -218,7 +227,7 @@ export default class EventoRepository {
       const sql = `Delete from events Where id=$1`;
       const values = [id];
       const result=await this.BDclient.query(sql, values);
-      return result.rowsAffected[0]
+      return result.rowsAffected
     } catch (error) {
       console.log(error);
     }
@@ -228,11 +237,11 @@ export default class EventoRepository {
     try {
       var sql = ""
       if (enrollment.enabled) {
-        sql = `Insert INTO event_enrollments (id_event, id_user, description, registration_date_time,attended,observations,rating) VALUES ($1,$2,$3,$4,$5,$6,$7)`;
+        sql = `Insert INTO event_enrollments (id_event, id_user, registration_date_time,attended) VALUES ($1,$2,$3,false)`;
       }else return "Error";
       const date = new Date();
       const fecha = `${date.getFullYear()}-${date.getMonth()}-${date.getDate()} `
-      const values = [enrollment.idEvento, enrollment.user_id,enrollment.description, fecha,enrollment.attended, enrollment.observations, enrollment.rating]
+      const values = [enrollment.idEvento, enrollment.user_id,fecha]
       await this.BDclient.query(sql, values);
 
 

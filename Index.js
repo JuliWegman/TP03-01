@@ -10,12 +10,13 @@ import "dotenv/config"
 const app = express();
 app.use(express.json());
 
-app.use("/event", routerEvento);
-app.use("/user", routerUsuario);
-app.use("/province", routerProvincia);
-app.use("/localidad", routerLocalidad);
-app.use("/categoria", routerCategoria);
-app.use("/event-location",routerEventLocation);
+
+app.use("/api/event", routerEvento);
+app.use("/api/user", routerUsuario);
+app.use("/api/province", routerProvincia);
+app.use("/api/location", routerLocalidad);
+app.use("/api/event-category", routerCategoria);
+app.use("/api/event-location",routerEventLocation);
 
 app.listen(process.env.PORT, () => {
   console.log("server is running");

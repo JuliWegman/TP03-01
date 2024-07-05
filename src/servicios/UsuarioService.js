@@ -1,4 +1,3 @@
-import { query } from "express";
 import repositorio from "../repositorios/UsuarioRepository.js"
 import login from "../auth/login.js";
 const repo= new repositorio();

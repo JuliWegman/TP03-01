@@ -43,13 +43,14 @@ router.delete("/:id", AuthMiddleware , async (req, res) => {
   
   try {
     const ev=await EventService.getEventById(id)
+    console.log(ev);
     const tags=await EventService.getTags(id)
     const enrollment=await EventService.getEventEnrollment(id)
     if(ev!=null){
     if (tags==null && enrollment==null) {
       
-      const eliminado=await EventService.DeleteEvent(id);
-      return res.status(200).json(eliminado)
+      await EventService.DeleteEvent(id);
+      return res.status(200).json("eliminado")
     }else{
     return res.status(400).send("No se puede eliminar porque tiene tags o gente inscripta");
     }
@@ -74,11 +75,13 @@ router.post("/",AuthMiddleware, async (req, res) => {
   Evento.enabled_for_enrollment = req.body.enabled_for_enrollment;
   Evento.max_assistance = req.body.max_assistance;
   Evento.id_creator_user = req.user.id;
+
+  console.log(Evento);
   
   try {
     const evLoc  =await evLocService.getEventLocationById(Evento.id_event_location)
     if (Evento.name!=null && Evento.description!=null && Evento.id_event_category!=null && Evento.id_event_location!=null && Evento.start_date!=null && Evento.duration_in_minutes!=null && Evento.price!=null && Evento.enabled_for_enrollment!=null && Evento.max_assistance!=null) {
-      if (evLoc.max_capacity>Evento.max_assistance) {
+      if (evLoc.max_capacity>=Evento.max_assistance) {
         if (Evento.price>0 && Evento.duration_in_minutes>0 ) {
           const respuesta = await EventService.InsertEvento(Evento);;
           return res.status(201).json(respuesta);
@@ -167,32 +170,43 @@ router.get("/:id/enrollment", async (req, res) => {
   enrollment.attended = req.query.attended;
   enrollment.rating = req.query.rating;
 
-  // if (enrollment.attended == "true" || enrollment.attended == "false" || enrollment.attended == null || 1==1) {
+    
     try {
-      const x = await EventService.getEventEnrollment(enrollment);
-      return res.json(x);
+      const event=await EventService.getEventById(enrollment.event_id)
+      
+      if(event==null  ){
+        return res.status(404).send("No existe un evento con esa id")
+      }else if(!event.enabled_for_enrollment){
+        return res.status(402).send("Este evento no se puede anotarse")
+      }else{
+        const x = await EventService.getEventEnrollment(enrollment);
+        return res.status(200).json(x);
+      }
+      
     } catch (error) {
       console.log(error);
       return res.json(error);
     }
-  // } else {
-  //   return res.json("error no es booleano AHREEE");
-  // }
+ 
 });
 
 router.post("/:id/enrollment", AuthMiddleware , async (req, res) => {
   const enrollment = {};
-  const evento = await EventService.getEventById(req.params.id)
-
+  const enrollmentsABuscar={}
   enrollment.idEvento = req.params.id;
-  enrollment.attended = req.query.attended;
-  enrollment.rating = req.query.rating;
-  enrollment.descripcion = req.query.descripcion;
-  enrollment.observations = req.query.observations;
+  enrollmentsABuscar.idEvento = req.params.id;
   enrollment.user_id = req.user.id; 
-  enrollment.enabled = evento.enabled_for_enrollment
-
   try {
+    const evento = await EventService.getEventById(req.params.id)
+    enrollment.enabled = evento.enabled_for_enrollment
+    const anotados=EventService.countEnrollments(enrollment.idEvento)
+    if(evento.start_date<=Date.now()){
+      return res.status(401).send("Este evento ya sucedió")
+    }else if (anotados+1 >evento.max_assistance) {
+      return res.status(401).send("No hay más lugar")
+    }else if(!evento.enabled_for_enrollment){
+      return res.status(401).send("No está habilitado para anotarse")
+    }
     await EventService.InscripcionEvento(enrollment);
     return res.json("Inscripto en el evento cheto");
   } catch (error) {
@@ -201,9 +215,9 @@ router.post("/:id/enrollment", AuthMiddleware , async (req, res) => {
   }
 });
 
-router.patch("/:id/enrollment",AuthMiddleware,async (req, res) => {
+router.patch("/:id/enrollment/:rating",AuthMiddleware,async (req, res) => {
   const idEvento = req.params.id;
-  const rating = req.query.rating;
+  const rating = req.params.rating;
   try {
     const mensaje = await EventService.CambiarRating(idEvento, rating);
     return res.status(200).send(mensaje);

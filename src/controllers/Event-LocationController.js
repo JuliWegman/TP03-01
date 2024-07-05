@@ -26,8 +26,12 @@ router.get("/", AuthMiddleware , async (req, res) => {
 
 router.get("/:id", AuthMiddleware , async (req, res) => {
     const id = req.params.id;
+    const id_user=req.user.id;
     try {
       const evLocById = await evLocService.getEventLocationById(id);
+      if (evLocById.id_creator_user!=id_user) {
+        return res.status(401).send("No tienes acceso a este event-location")
+      }
       if (evLocById!=null) {
         return res.status(200).json(evLocById);
       }else{

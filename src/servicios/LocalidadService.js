@@ -1,4 +1,3 @@
-import { query } from "express";
 import LocalidadRepo from "../repositorios/LocalidadRepository.js"
 import EvLocRepo from "../repositorios/Event-LocationRepository.js"
 import { Pagination, PaginationDto } from "../utils/Paginacion.js";
@@ -13,11 +12,11 @@ export class LocalidadService {
         const parsedLimit = PaginacionConfig.parseLimit(limit);
         const parsedOffset = PaginacionConfig.parseOffset(offset);
         const cantidad=Number.parseInt(await repo.cantLocalidades())
-        const paginacion = PaginacionConfig.buildPaginationDto(parsedLimit, parsedOffset, cantidad, `/localidad`)
-        const localidades=await repo.getLocalidades(parsedLimit,parsedOffset)
+        const paginacion = PaginacionConfig.buildPaginationDto(parsedLimit, parsedOffset, cantidad, `/api/location`)
+        const Colection=await repo.getLocalidades(parsedLimit,parsedOffset)
 
-        const collection={localidades,paginacion}
-        return collection;  
+        const x={Colection,paginacion}
+        return x;  
     }
 
     async getLocalidadById(id){
@@ -28,10 +27,10 @@ export class LocalidadService {
         const parsedLimit = PaginacionConfig.parseLimit(limit);
         const parsedOffset = PaginacionConfig.parseOffset(offset);
         const cantidad =  Number.parseInt(await repoEvLoc.cantEvLocByLocation(id));
-        const paginacion = PaginacionConfig.buildPaginationDto(parsedLimit, parsedOffset, cantidad, `/localidad/${id}/event-location`)
-        const EvLocs= await repoEvLoc.getEventLocationsByLocation(id,parsedLimit,parsedOffset);
-        const collection={EvLocs,paginacion}
-        return collection;
+        const paginacion = PaginacionConfig.buildPaginationDto(parsedLimit, parsedOffset, cantidad, `/api/location/${id}/event-location`)
+        const Colection= await repoEvLoc.getEventLocationsByLocation(id,parsedLimit,parsedOffset);
+        const x={Colection,paginacion}
+        return x;
 
 
     }

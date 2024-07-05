@@ -1,4 +1,3 @@
-import { query } from "express";
 import CategoriaRepo from "../repositorios/CategoryRepository.js"
 import { Pagination, PaginationDto } from "../utils/Paginacion.js";
 
@@ -12,11 +11,11 @@ export class CategoryService {
         const parsedLimit = PaginacionConfig.parseLimit(limit);
         const parsedOffset = PaginacionConfig.parseOffset(offset);
         const cantidad=Number.parseInt(await repo.cantCategorias())
-        const paginacion = PaginacionConfig.buildPaginationDto(parsedLimit, parsedOffset, cantidad, `/categoria`)
-        const categorias=await repo.getCategorias(parsedLimit,parsedOffset)
+        const paginacion = PaginacionConfig.buildPaginationDto(parsedLimit, parsedOffset, cantidad, `/api/event-category`)
+        const Colection=await repo.getCategorias(parsedLimit,parsedOffset)
 
-        const collection={categorias,paginacion}
-        return collection;  
+        const xx={Colection,paginacion}
+        return xx;  
     }
 
     async getCategoriaById(id){

@@ -1,8 +1,6 @@
 import pg from "pg";
 import { BDconfig } from "../configs/BD.js";
-import e from "express";
 
-// pasandolo al repository
 export default class LocalidadRepository {
   constructor() {
     const { Client } = pg;
