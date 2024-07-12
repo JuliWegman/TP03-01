@@ -8,10 +8,42 @@ export default class EventoRepository {
     this.BDclient.connect();
   }
 
-  async cantEventos() {
+  async cantEventos(Evento) {
     try {
-      var sql = "SELECT COUNT(*) FROM events"
-      const result = await this.BDclient.query(sql)
+      var sql = "SELECT COUNT(*) FROM events where"
+      const values =[]
+      var index = 1;
+
+      if (Evento.name != null) {
+        sql += ` e.name=$${index} and`;
+        values.push(Evento.name);
+        index++;
+      }
+      if (Evento.category != null) {
+        sql += ` ec.name=$${index} and`;
+        values.push(Evento.category);
+        index++;
+      }
+      if (Evento.startDate != null) {
+        sql += ` e.start_date=$${index} and`;
+        values.push(Evento.startDate);
+        index++;
+      }
+      if (Evento.tag != null) {
+        sql += ` t.name=$${index} and`;
+        values.push(Evento.tag);
+        index++;
+      }
+
+
+      if (sql.endsWith(" and")) {
+        sql = sql.slice(0, -4);
+      }
+      if (sql.endsWith(" where ")) {
+        sql = sql.slice(0, -7);
+      }
+      const result = await this.BDclient.query(sql,values)
+
       return result.rows[0].count
     } catch (error) {
       return error;
@@ -23,6 +55,7 @@ export default class EventoRepository {
       var sql = "SELECT COUNT(*) FROM event_enrollments WHERE id_event=$1"
       const values=[id]
       const result = await this.BDclient.query(sql,values)
+      
       return result.rows[0].count
     } catch (error) {
       return error;

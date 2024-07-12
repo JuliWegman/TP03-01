@@ -23,9 +23,9 @@ export class EventoService {
     const Colection = await repo.getEventByFilter(Evento, parsedLimit, parsedOffset)
 
     for (let i = 0; i < Colection.length; i++) {
-      Colection[i].user=await repoUser.getUserById(Colection[i].id_creator_user)
-      Colection[i].categoría=await repoCategoria.getCategoriaById(Colection[i].id_event_category)
-      Colection[i].localidad=await repoLoc.getLocalidadById(Colection[i].id_event_location)
+      Colection[i].creator_user=await repoUser.getUserById(Colection[i].id_creator_user)
+      Colection[i].event_category=await repoCategoria.getCategoriaById(Colection[i].id_event_category)
+      Colection[i].event_location=await repoLoc.getLocalidadById(Colection[i].id_event_location)
       delete Colection[i].id_creator_user,delete Colection[i].id_event_category,delete Colection[i].id_event_location      
     }
     const xx = {Colection, paginacion}
@@ -34,9 +34,9 @@ export class EventoService {
   async getEventById(id) {
     const Evento=await repo.getEventById(id);
     if (Evento!=null) {
-      Evento.user=await repoUser.getUserById(Evento.id_creator_user)
-      Evento.categoría=await repoCategoria.getCategoriaById(Evento.id_event_category)
-      Evento.localidad=await repoLoc.getLocalidadById(Evento.id_event_location)
+      Evento.creator_user=await repoUser.getUserById(Evento.id_creator_user)
+      Evento.event_category=await repoCategoria.getCategoriaById(Evento.id_event_category)
+      Evento.event_location=await repoLoc.getLocalidadById(Evento.id_event_location)
       delete Evento.id_creator_user,delete Evento.id_event_category,delete Evento.id_event_location
     } 
     return Evento
