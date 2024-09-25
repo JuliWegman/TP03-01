@@ -19,6 +19,6 @@ app.use("/api/event-category", routerCategoria);
 app.use("/api/event-location",routerEventLocation);
 
 app.listen(process.env.PORT, () => {
-  console.log("server is running");
+  console.log("server is running port "+process.env.PORT);
 });
 

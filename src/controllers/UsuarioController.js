@@ -10,6 +10,8 @@ const UserService = new UsuarioService();
 router.post("/login", async (req, res) => {
   const pass = req.body.password;
   const user = req.body.username;
+
+  console.log(pass+"    "+user);
   try {
     const token = await UserService.login(user, pass);
 
