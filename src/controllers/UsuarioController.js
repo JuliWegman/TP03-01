@@ -2,6 +2,8 @@ import express from "express";
 import {
   UsuarioService
 } from "../servicios/UsuarioService.js";
+import AuthMiddleware from "../auth/authMiddleware.js"
+
 
 const router = express.Router();
 const UserService = new UsuarioService();
@@ -76,5 +78,26 @@ router.post("/register", async (req, res) => {
     return res.json(error);
   }
 });
+
+router.get("/", AuthMiddleware ,async (req,res)=>{
+  const id = req.user.id;
+  var Usuario
+  try{
+    Usuario=await UserService.getUserById(id)
+  }catch(error){
+    return res.status(404).json(error)
+  }
+
+  if (Usuario!=null) {
+    return res.status(200).json(Usuario)
+  }else{
+    return res.status(402).json("Ese usuario no existe")
+  }
+
+
+
+
+
+})
 
 export default router;
