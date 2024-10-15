@@ -191,6 +191,7 @@ router.get("/:id/enrollment", async (req, res) => {
 });
 
 router.post("/:id/enrollment", AuthMiddleware , async (req, res) => {
+  console.log("aaaaaaaaa");
   const enrollment = {};
   const enrollmentsABuscar={}
   enrollment.idEvento = req.params.id;
@@ -201,11 +202,11 @@ router.post("/:id/enrollment", AuthMiddleware , async (req, res) => {
     enrollment.enabled = evento.enabled_for_enrollment
     const anotados=EventService.countEnrollments(enrollment.idEvento)
     if(evento.start_date<=Date.now()){
-      return res.status(401).send("Este evento ya sucedió")
+      return res.status(403).send("Este evento ya sucedió")
     }else if (anotados+1 >evento.max_assistance) {
-      return res.status(401).send("No hay más lugar")
+      return res.status(403).send("No hay más lugar")
     }else if(!evento.enabled_for_enrollment){
-      return res.status(401).send("No está habilitado para anotarse")
+      return res.status(403).send("No está habilitado para anotarse")
     }
     await EventService.InscripcionEvento(enrollment);
     return res.json("Inscripto en el evento cheto");

@@ -33,7 +33,7 @@ export default class EventoRepository {
   async getEventByFilter(Evento, pageSize, reqPage) {
     var returnEntity = null;
     try {
-      var sql = `SELECT  e.id_creator_user,e.id_event_category,e.id_event_location,e.name, e.description, ec.name as Category, el.name as Location, e.start_date, e.duration_in_minutes, e.price, e.enabled_for_enrollment, e.max_assistance FROM events e LEFT join event_categories ec on e.id_event_category=ec.id LEFT join event_tags et on e.id=et.id_event LEFT join tags t on et.id_tag=t.id LEFT join locations el on e.id_event_location = el.id LEFT join users u on e.id_creator_user = u.id where `;
+      var sql = `SELECT e.id, e.id_creator_user,e.id_event_category,e.id_event_location,e.name, e.description, ec.name as Category, el.name as Location, e.start_date, e.duration_in_minutes, e.price, e.enabled_for_enrollment, e.max_assistance FROM events e LEFT join event_categories ec on e.id_event_category=ec.id LEFT join event_tags et on e.id=et.id_event LEFT join tags t on et.id_tag=t.id LEFT join locations el on e.id_event_location = el.id LEFT join users u on e.id_creator_user = u.id where `;
       const values = [
         pageSize,
         (reqPage*pageSize),
