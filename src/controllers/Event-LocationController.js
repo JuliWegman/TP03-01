@@ -7,7 +7,24 @@ const router = express.Router();
 const evLocService=new EventLocationService();
 const locService= new LocalidadService()
 
-router.get("/", AuthMiddleware , async (req, res) => {
+router.get("/todos",async (req,res)=>{
+  const limit = req.query.limit;
+  const offset = req.query.offset;
+  
+    try {
+      const evLocByUser = await evLocService.getEventLocations(limit,offset);
+      if (evLocByUser!=null) {
+        return res.status(200).json(evLocByUser);
+      }else{
+        return res.status(401).json("este usuario no creo ninguna event location");
+      }
+    } catch (error) {
+      console.log(error);
+      return res.json(error);
+    }
+})
+
+router.get("/" , async (req, res) => {
   const limit = req.query.limit;
   const offset = req.query.offset;
   

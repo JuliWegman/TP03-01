@@ -8,6 +8,22 @@ export default class LocalidadRepository {
       this.BDclient.connect();
     }
 
+    async getEventLocations(limit,offset){
+      let returnEntity = null;
+        try {
+      var sql = `SELECT * FROM event_locations order by id asc limit $1 offset $2 `;
+      const values = [limit,offset];
+      const result = await this.BDclient.query(sql, values);
+
+      if (result.rows.length > 0) {
+        returnEntity = result.rows;
+      }
+        } catch (error) {
+      console.log(error);
+        }
+        return returnEntity;
+    }
+
     async getEventLocationsByUser(id,limit,offset){
         let returnEntity = null;
         try {

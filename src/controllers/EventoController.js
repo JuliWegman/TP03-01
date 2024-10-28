@@ -77,11 +77,11 @@ router.post("/",AuthMiddleware, async (req, res) => {
   Evento.id_creator_user = req.user.id;
 
   console.log(Evento);
+  console.log("aaaaaaaaaaaaaaaaaaaaa");
   
   try {
     const evLoc  =await evLocService.getEventLocationById(Evento.id_event_location)
     if (Evento.name!=null && Evento.description!=null && Evento.id_event_category!=null && Evento.id_event_location!=null && Evento.start_date!=null && Evento.duration_in_minutes!=null && Evento.price!=null && Evento.enabled_for_enrollment!=null && Evento.max_assistance!=null) {
-      if (evLoc.max_capacity>=Evento.max_assistance) {
         if (Evento.price>0 && Evento.duration_in_minutes>0 ) {
           const respuesta = await EventService.InsertEvento(Evento);;
           return res.status(201).json(respuesta);
@@ -89,9 +89,7 @@ router.post("/",AuthMiddleware, async (req, res) => {
           return res.status(400).send("Precio y duración no pueden ser 0")
         }
 
-      }else{
-        return res.status(400).send("No pueden asistir más personas de las que admite la localidad")
-      }
+      
     }else{
       return res.status(400).send("Faltan datos")
     }

@@ -17,6 +17,17 @@ export class EventLocationService{
 
     }
 
+    async getEventLocations(limit,offset){
+        const parsedLimit = PaginacionConfig.parseLimit(limit);
+        const parsedOffset = PaginacionConfig.parseOffset(offset);
+        const cantidad =  2;
+        const paginacion = PaginacionConfig.buildPaginationDto(parsedLimit, parsedOffset, cantidad, "/api/event-location")
+        const Colection= await repo.getEventLocations(parsedLimit,parsedOffset);
+
+        const xx={Colection,paginacion}
+        return xx;
+    }
+
     async getEventLocationById(id){
         return await repo.getEventLocationById(id);
     }
