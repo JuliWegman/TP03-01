@@ -65,17 +65,18 @@ export default class CategoriaRepository {
         try {
             var sql = "UPDATE event_categories SET "
             var index=2;
+            console.log(categoria);
             const values = [categoria.id]
 
-            if (categoria.name != null) {
+            if (categoria.nombre != null) {
                 sql += `name = $${index},`
-                values.push(categoria.name)
+                values.push(categoria.nombre)
                 index++;
             }
 
-            if (categoria.display_order != null) {
+            if (categoria.displayOrder != null) {
                 sql += `display_order = $${index}`
-                values.push(categoria.display_order)
+                values.push(categoria.displayOrder)
                 index++;
             }
 

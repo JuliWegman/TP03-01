@@ -56,20 +56,16 @@ router.get("/", async (req, res) => {
   } else return res.status(400).json("El nombre (name) esta vacio")
   });
 
-  router.put("/", authMiddleware, async (req, res) => {
-    const categoria = {};
-    categoria.name = req.body.name;
-    categoria.display_order = req.body.display_order;
-    categoria.id = req.body.id;
+  router.put("/", async (req, res) => {
+    
 
-    if ((categoria.name != null || categoria.display_order != null) && categoria.id != null) {
       try {
-        const respuesta = await CategoriaService.updateCategoria(categoria)
+        const respuesta = await CategoriaService.updateCategoria(req.body)
         return res.status(200).json(respuesta)
       } catch (error) {
         return res.status(400).json(error)
       }
-    } else res.status(401).json("bad request")
+     
   })
 
   router.delete("/:id", authMiddleware, async (req,res) => {
@@ -90,5 +86,6 @@ router.get("/", async (req, res) => {
 
   })  
   
+
 
   export default router;
