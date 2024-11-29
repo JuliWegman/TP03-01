@@ -41,14 +41,10 @@ router.get("/" , async (req, res) => {
     }
 });
 
-router.get("/:id", AuthMiddleware , async (req, res) => {
+router.get("/:id" , async (req, res) => {
     const id = req.params.id;
-    const id_user=req.user.id;
     try {
       const evLocById = await evLocService.getEventLocationById(id);
-      if (evLocById.id_creator_user!=id_user) {
-        return res.status(401).send("No tienes acceso a este event-location")
-      }
       if (evLocById!=null) {
         return res.status(200).json(evLocById);
       }else{
@@ -86,7 +82,7 @@ router.post("/",AuthMiddleware, async (req,res)=>{
         }
       }else{
 
-        return res.status(400).send("No existe esa id localidad");
+        return res.status(400).send("No exista esa id localidad");
       }
     }else{
       return res.status(400).send("Nombre o dirección inválidos");
@@ -140,17 +136,17 @@ router.put("/",AuthMiddleware, async (req,res)=>{
 
 });
 
-router.delete("/:id", AuthMiddleware , async (req,res)=>{
+router.delete("/:id" , async (req,res)=>{
   const id= req.params.id;
   try{
   const evLocById = await evLocService.getEventLocationById(id);
-  if (evLocById!=null && evLocById.id_creator_user==req.user.id) {
+  if (evLocById!=null) {
     await evLocService.deleteEvLoc(id);
     return res.status(200).send("Event location eliminado")
 
     
   }else{
-    return res.status(404).send("Not found")
+    return res.status(404).send("Not fuoond")
   }
   }catch(error){
     console.log(error);

@@ -76,7 +76,7 @@ router.get("/", async (req, res) => {
           const respuesta = await CategoriaService.deleteCategoria(id)
         return res.status(200).json(respuesta)
         }else{
-          return res.status(404).json("Id no encontrado");
+          return res.status(404).json("Id no encoxntrado");
 
         }
         
